@@ -38,4 +38,8 @@ int main(int argc, char** argv){
     imshow("white noise", image);
     
     c = waitKey(0);
+
+    if(IM_D != ""){
+        imwrite(IM_D, image);
+    }
 }
