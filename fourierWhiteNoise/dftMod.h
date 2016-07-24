@@ -5,7 +5,7 @@
 #include "opencv2/core/core.hpp"
 
 namespace siganal{
-void visualizeFDomain(cv::Mat* targetMatrix);
+void visualizeFDomain(cv::Mat& targetMatrix);
 //cv::Mat* retrieveFDomain(cv::Mat* inputMatrix);
 }
 
