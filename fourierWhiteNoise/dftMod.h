@@ -6,6 +6,9 @@
 
 namespace siganal{
 void visualizeFDomain(cv::Mat& targetMatrix);
+
+std::string typeID(int type);
+//void transferFDomain(cv::Mat& targetMatrix);
 //cv::Mat* retrieveFDomain(cv::Mat* inputMatrix);
 }
 
