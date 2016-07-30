@@ -25,7 +25,7 @@ void siganal::visualizeFDomain(cv::Mat& targetMatrix){
 }
 
 std::string siganal::typeID(int type){
-  string r;
+    std::string r;
 
   uchar depth = type & CV_MAT_DEPTH_MASK;
   uchar chans = 1 + (type >> CV_CN_SHIFT);
