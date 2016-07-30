@@ -1,0 +1,32 @@
+Kay. So I wanna take an image, DFT it, take the two channels and visualize them at the same time. Fun!
+Well, how do we do this? Well, we need to make them each one channel of some three-channel output image. Imshow only displays BGR, so why not start with that? Just because, I'll put Real on Red and Imaginary on Blue- so the channels would be Imaginary, Scalar::all(0), and Real.
+How do we have these combined? Well, C1 and C3 need to have the same type as is expected in each channel of a BGR image. 
+Eh, let's just combine them and try.
+I notice we convert the 'image' variable to a Mat_<float>... I think originally it's a char, so let's convert it back. Should be CV_8U.
+Okay, merge fails. 
+At least one of the three matrices we're combining does not have the same depth or size as the other two. Let's debug, just output the things of all three. Okay, 5: Imaginary matrix, the Mat_<char> of it, same thing for real, and then the imArray of the Mat::zeros.
+Okay, the sizes are all in hex and suspiciously different but... we'll ignore that for now. MatCharImag and MatCharReal have depth of 1, but Zeros has depth of 0.
+0: 8U. But what does 1 mean? COUT the constants, I guess.
+Damnit, so the two matrices are CV_16S. Great. I'll try with having the Mat::zeros being 8S too, but I bet it'll die at imread.
+Ok it worked. Looks funky but it worked. Nice.
+Now I need to just do the regular scaling stuff... except wait, there are negative values so I can't do that. Umn... wait, are there? The reason we have these signed values is that we converted to float, which is signed, but I don't think the DFT will give negative coefficients... let's try it! So we have to scale all the matrices before we put them inthe imArray.
+Wait, fuck, there might be negative values because we were looking at magnitude earlier, not the raw Real/Imaginary values! Okay, I can deal with this, not too bad, we'll visualize magnitude along with phase. Maybe we want to do HSV- color indicates phase, while saturation indicates magnitude? yeah, I might, but let's do B/R first. Magnitude is Red, Phase is Blue. Good plan.
+Okay, so it's not working. Apparently I have to use .size() and not .size because they return different types of sizes- cv::Size vs. cv::Mat::MSize. I guess the latter is matrix-specific.
+I honest to gods cannot tell if that's a bunch of different colors or if my eyes are just playing tricks on me. Gonna remove the phase from the composition for now to make sure, replace that with magnitude so we'll just get purple at high intensity.
+... still really uniform. Weird, gonna try outputting one of the individual channels I guess.
+Is that... all white or like... cream? It kinda looks like cream color, I like it. Not happy though.
+Why is it saying that that value is 0. It doesn't look like zero. I'm using .at<char>(100,100) on magnitudeMat... ugh.
+Ah fuck, I normalized phaseMat twice instead of doing magnitudeMat one of the times. Wew.
+Muuuuuuuch better. Now I get "|" in cout, makes sense since I'm reading it as a char... that 0 was probably literally the output value which matches a '0' char literal. Wew lad. Let's try with both matrices again.
+Still all grey. Godsdamnit. Let's look at phaseMat now.
+Good, nice and staticky.
+So... what?
+Let's look at the depths of the original image.
+Yeah, it's 0- I guess the imshow doesn't like 8S? Let's try converting, uchar instead of char in Mat_<~>
+All black. Lovin' it. Kay, let's try this again but with our dftMod cvType identifier.
+Ok... so they're the same type >_>, 8UC3
+Interesting. When I cout (int)~.at<char>(~) for phaseMat before and after the (Mat imArray[]) line, it's the same (negative >_>??? didn't I normalize that what OH PHASE WON"T ALWAYS BE POSITIVE SHIT), but uchar of the post-cast phaseMat is different... still, shouldn't be doing this and being identical for all points.
+Let's try imshowing Mat_<uchar>(phaseMat) vs. phaseMat.
+Perfect. phaseMat is nice and grainy, but Mat_<uchar>(phaseMat)... is not. All black, or at least dark. Unfun. So... let's try just... ugh. Mat_<float>??? CV_32F
+Okay, so phaseMat and Mat_<float>(phaseMat) are identical. If imshow doesn't work (won't take CV_32F) I'll just cvconvert it to 8U.
+IT WORKS AND IT'S BEAUTIFUL WOOHOO
