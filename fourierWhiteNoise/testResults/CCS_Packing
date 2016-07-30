@@ -1,0 +1,47 @@
+Storing all results of tests and whatnot in this file, starting after commit f99950...
+
+Complex-Conjugate Symmetry Form
+
+As far as I can tell from reading, this form allows for single matrices to pass through the DFT. When a two-channel image is constructed as per the tutorial, the first channel seems to signify the 'real' part of the image and the second the 'imaginary' part- in our case, all zero, as indicated in the construction of planes[]. When the DFT operates on the image, the output will be of comlpex value and is thus split between the two channels. However, if the image input is single-channel, you get some problems.
+Simply, there's no destination for the complex-valued result of the DFT! You could use complex values (<complex>) in the matrix, but that's really annoying to display. However, it turns out that since the DFT of a real matrix will always produce a function with the property Complex-Conjugate Symmetry, meaning that for all f on x ( f[-x] = f*[x] ), you can compact all the values into a single matrix, discarding the redundant values while keeping all the information through a process known as CCS Packing, taken from the Intel vision library: specifically, RCPack2D.
+
+I'm doing a test to figure out if that's true. According to the CCS list, the CCS-packed matrix location [0,0] should have an equivalent value to the real-valued channel location [1, 0].
+Process: DFT 2 images, one with 2 channels and one with 1. Compare [0,0] and [1,0].
+Log:
+Compiles, woo.
+Error>>
+OpenCV Error: Assertion failed (CV_MAT_TYPE(mtype) == m.type()) in create, file /build/opencv-FWWjHr/opencv-2.4.9.1+dfsg/modules/core/src/matrix.cpp, line 1442
+terminate called after throwing an instance of 'cv::Exception'
+  what():  /build/opencv-FWWjHr/opencv-2.4.9.1+dfsg/modules/core/src/matrix.cpp:1442: error: (-215) CV_MAT_TYPE(mtype) == m.type() in function create
+<<
+Okay, bps tell me error is past the merge-planes-into-complexim function.
+Lol it's because I'm trying to merge the planes in to complexIm, which I made a Mat_<float> constructed off of image to make the single-channel thing work.
+Compiles, runs... values are different by an order of 10. Fuck.
+Let's see if the sizes are even the- oh, I didn't split the image. Wew lad.
+Still order of magnitude difference. Let's see if the sizes are the same.
+Yeah, same size >_>
+Flip x and y? >Nope
+Try 0,0 for the second? ... identical >_>
+Oh oops I think I misread the documentation.. the top bar is blue so I thought it was just labels but they're filled with the same stuff as the other areas.
+So, CCS-P form (0,3) should equal Imag(0,1). Let's try it. > Nope
+Uh, flip 0,1 to 1,0? > Nope
+Flip 0,3 to 3, 0 too? > Nope >_>
+Uh. Reading docs again...
+Maybe it's all broken? Try 0,3 0,3. > Good, not equal.
+K... 0,1 and R(0,1) should be = > Yup
+
+TO NOTE: ROWSxCOLS, DOWN,RIGHT
+
+1,0 and IM(1,0) = > Nope.
+
+Oh, oops, I think I've been reading it wrong again: I have the row below the blue row as '0'...
+
+so that should've been: 2,0 and IM(1,0) = : > Yup, equal.
+
+And let's redo that one from earlier:
+3,3 = IM(2,1)
+Lol oops:
+2,2 = IM(2,1) >  Equal!
+
+Think we're good.
+
