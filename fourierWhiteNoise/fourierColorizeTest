@@ -30,3 +30,7 @@ Let's try imshowing Mat_<uchar>(phaseMat) vs. phaseMat.
 Perfect. phaseMat is nice and grainy, but Mat_<uchar>(phaseMat)... is not. All black, or at least dark. Unfun. So... let's try just... ugh. Mat_<float>??? CV_32F
 Okay, so phaseMat and Mat_<float>(phaseMat) are identical. If imshow doesn't work (won't take CV_32F) I'll just cvconvert it to 8U.
 IT WORKS AND IT'S BEAUTIFUL WOOHOO
+
+HSV Time.
+Old file: fourierColorizeTest->fourierBGRColorizeTest
+New file: fourierHSVColorizeTest
