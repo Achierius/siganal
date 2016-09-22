@@ -2,7 +2,6 @@
 #define __SIGANAL_KALMAN_FILTER_H
 
 #include "./eigen/Eigen/Dense"
-#include <string>
 
 class KalmanFilter{
     using Eigen::VectorXd;
