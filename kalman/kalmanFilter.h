@@ -10,15 +10,15 @@ class KalmanFilter{
 
 public:
     KalmanFilter();
-    KalmanFilter(VectorXd initialState, MatrixXd initialStateCV, MatrixXd stateTransition, MatrixXd sensorMap, MatrixXd controlMap, MatrixXd noiseCV, MatrixXd sensorCV);
+    KalmanFilter(VectorXd initialState, MatrixXd initialStateCV, MatrixXd stateTransition, MatrixXd sensorMap, MatrixXd controlMap, MatrixXd noiseCV, MatrixXd sensorCV, double timeStep);
 
-    initialize(VectorXd initialState, MatrixXd initialStateCV, MatrixXd stateTransition, MatrixXd sensorMap, MatrixXd controlMap, MatrixXd processNoiseCV, MatrixXd sensorNoiseCV);
+    void initialize(VectorXd initialState, MatrixXd initialStateCV, MatrixXd stateTransition, MatrixXd sensorMap, MatrixXd controlMap, MatrixXd processNoiseCV, MatrixXd sensorNoiseCV, double timeStep);
 
-    void setQ(MatrixXd newProcessNoiseCV);
+    /*void setQ(MatrixXd newProcessNoiseCV);
     void setR(MatrixXd newSensorNoiseCV);
     void setF(MatrixXd newF);
     void setB(MatrixXd newB);
-    void setH(MatrixXd newH);
+    void setH(MatrixXd newH);*/
 
     void setTimeStep(double seconds);
     double getTimeStep();
