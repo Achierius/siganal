@@ -47,3 +47,4 @@ private:
     double timeElapsed;
 };
 
+#endif//__SIGANAL_KALMAN_FILTER_H
