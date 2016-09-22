@@ -1,6 +1,9 @@
 #include "kalmanFilter.h"
 #include <stdlib.h>
 
+#include <./eigen/Eigen/LU> //Inverse of Matrix
+
+
 KalmanFilter::KalmanFilter(){
     MatrixXd nullMat(1); nullMat << 0;
 
@@ -47,4 +50,25 @@ MatrixXd KalmanFilter::getCurrentCovariance(){
 
 
 
+void updateFilter(VectorXd sensorInput, VectorXd controlInput){
+    timeElapsed += timeStep;
 
+    k_u = controlInput;
+    k_z = sensorInput;
+
+    k_xpre = k_xcur;
+    k_Ppre = k_Pcur;
+
+    /*
+     * Prediction Equations
+     */
+    k_xcur = k_F*k_xpre + k_B*k_u;
+    k_Pcur = (k_F*k_Ppre)*(k_F.transpose()) + k_Q;
+
+    /*
+     * Update Equations
+     */
+    k_K = k_Ppre*(k_H.transpose())*((k_H*k_Ppre*(k_H.transpose())+k_R).inverse());
+    K_xcur = k_xcur + k_K*(k_z-k_H*k_xcur);
+    k_Pcur = k_Pcur - k_K*k_H*k_P;
+}
