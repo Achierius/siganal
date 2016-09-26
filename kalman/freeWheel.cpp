@@ -31,7 +31,7 @@ double lazyGauss(double mean, double max){ //Whooo cental limit theorem
 }
 void updateSystem(double dT){
     trueW = trueW += lazyGauss(0, 0.5*dT); //Speed randomly varies by at most half a degree per second
-    trueTheta = trueTheta + dT*trueW + lazyGauss(0, 1*dT); //More variance in the position whoo
+    trueTheta = (trueTheta + dT*trueW + lazyGauss(0, 1*dT)); //More variance in the position whoo
 }
 VectorXd measureSystem() //We have an encoder~
 {
@@ -76,6 +76,6 @@ int main(){
         kalman.updateFilter(measureSystem(), k_u);
         cout<<"System: Position "<<trueTheta<<", Velocity "<<trueW<<".\n";
         cout<<"Kalman: Position "<<kalman.getCurrentEstimate()(0)<<", Velocity "<<kalman.getCurrentEstimate()(0)<<".\n";
-        cin>>check;
+//        cin>>check;
     }
 }

@@ -69,13 +69,8 @@ void KalmanFilter::updateFilter(VectorXd sensorInput, VectorXd controlInput){
     /*
      * Update Equations
      */
-    int i;
     k_S = k_H*k_Ppre*(k_H.transpose())+k_R;
     k_K = k_Ppre*(k_H.transpose())*k_S.inverse();
-    std::cout<<k_xcur<<std::endl;
-    std::cin>>i;
-    std::cout<<k_K<<std::endl<<k_z<<std::endl<<k_H<<std::endl<<k_xcur;
     k_xcur = k_xcur + k_K*(k_z-k_H*k_xcur);
-    std::cin>>i;
     k_Pcur = k_Pcur - k_K*k_H*k_Pcur;
 }
