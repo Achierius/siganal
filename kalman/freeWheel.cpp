@@ -35,7 +35,7 @@ void updateSystem(double dT){
 }
 VectorXd measureSystem() //We have an encoder~
 {
-    VectorXd ret(1); ret << trueTheta + lazyGauss(0, 0.1); //At most 1 tenth a degree of error
+    VectorXd ret(2); ret << trueTheta + lazyGauss(0, 0.1), 0; //At most 1 tenth a degree of error
     return ret;
 }
 int main(){
@@ -63,7 +63,7 @@ int main(){
            0, 0.000001;
     
     MatrixXd k_H(2, 2); k_H << 1, 0,
-                               0, 0;
+                                0, 0;
    
 
     KalmanFilter kalman(stateVec, k_P, stateTransition, k_H, k_B, k_Q, k_R, dT);
