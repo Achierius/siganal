@@ -3,9 +3,8 @@
 
 #include "./eigen/Eigen/Dense"
 
+using namespace Eigen;
 class KalmanFilter{
-    using Eigen::VectorXd;
-    using Eigen::MatrixXd;
 
 public:
     KalmanFilter();
@@ -29,6 +28,7 @@ public:
     MatrixXd getCurrentCovariance();
 private:
     MatrixXd k_K; //OPTIMAL Kalman Gain
+    MatrixXd k_S; //Measurement covariance 
 
     MatrixXd k_F; //State Transition Matrix
     MatrixXd k_B; //Control Input Translation Matrix

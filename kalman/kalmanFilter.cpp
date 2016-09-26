@@ -1,13 +1,14 @@
 #include "kalmanFilter.h"
+#include <iostream>
 #include <stdlib.h>
 
-#include <./eigen/Eigen/LU> //Inverse of Matrix
+//#include <./eigen/Eigen/LU> //Inverse of Matrix
 
 
 KalmanFilter::KalmanFilter(){
-    MatrixXd nullMat(1); nullMat << 0;
+    MatrixXd nullMat(1,1); nullMat << 0;
 
-    this->initialize(nullMat, nullMat, nullMat, nullmat, nullmat, nullMat, nullMat, 0.01);
+    this->initialize(nullMat, nullMat, nullMat, nullMat, nullMat, nullMat, nullMat, 0.01);
 }
 
 KalmanFilter::KalmanFilter(VectorXd initialState, MatrixXd initialStateCV, MatrixXd stateTransition, MatrixXd sensorMap, MatrixXd controlMap, MatrixXd noiseCV, MatrixXd sensorCV, double timeStep){
@@ -34,10 +35,10 @@ void KalmanFilter::initialize(VectorXd initialState, MatrixXd initialStateCV, Ma
 void KalmanFilter::setTimeStep(double newTimeStep){ //Seconds
     this->timeStep = newTimeStep == 0 ? 0.0000001 : abs(newTimeStep); //Lazy Safety check
 }
-void KalmanFilter::getTimeStep(){
+double KalmanFilter::getTimeStep(){
     return timeStep;
 }
-void KalmanFilter::getTimeElapsed(){
+double KalmanFilter::getTimeElapsed(){
     return timeElapsed;
 }
 
@@ -50,7 +51,7 @@ MatrixXd KalmanFilter::getCurrentCovariance(){
 
 
 //y'all
-void updateFilter(VectorXd sensorInput, VectorXd controlInput){
+void KalmanFilter::updateFilter(VectorXd sensorInput, VectorXd controlInput){
     timeElapsed += timeStep;
 
     k_u = controlInput;
@@ -68,7 +69,13 @@ void updateFilter(VectorXd sensorInput, VectorXd controlInput){
     /*
      * Update Equations
      */
-    k_K = k_Ppre*(k_H.transpose())*((k_H*k_Ppre*(k_H.transpose())+k_R).inverse());
-    K_xcur = k_xcur + k_K*(k_z-k_H*k_xcur);
-    k_Pcur = k_Pcur - k_K*k_H*k_P;
+    int i;
+    k_S = k_H*k_Ppre*(k_H.transpose())+k_R;
+    k_K = k_Ppre*(k_H.transpose())*k_S.inverse();
+    std::cout<<k_xcur<<std::endl;
+    std::cin>>i;
+    std::cout<<k_K<<std::endl<<k_z<<std::endl<<k_H<<std::endl<<k_xcur;
+    k_xcur = k_xcur + k_K*(k_z-k_H*k_xcur);
+    std::cin>>i;
+    k_Pcur = k_Pcur - k_K*k_H*k_Pcur;
 }
