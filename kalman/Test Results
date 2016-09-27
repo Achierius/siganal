@@ -108,4 +108,14 @@ This resulted when we had the sensor input for both Theta and W enabled and H:I(
 
 So... using the kinematic definition of velocity measurement just NaN's everything out :c
 
+Settling time V: 0.05 X: 0.06.
+Covariance of the Process Noise: 
+5e-07 1e-06
+1e-06 5e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+Fixed! Apparently not much of a difference, huh.
+
+
     
