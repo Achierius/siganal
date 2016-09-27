@@ -92,3 +92,20 @@ Covariance of the Sensor Noise:
 1e-06     0
     0 1e-05
     
+Hmn, interesting. When I input no measurement but I have the H matrix as I(2)
+rather than 10/00, as would be used for interpreting a measurement input along
+the W value, it diverges- but only along the W value, and at a rather constant
+magnitude of 100%.
+
+Settling time V: 0.05 X: 0.06.
+Covariance of the Process Noise: 
+5e-07 1e-06
+1e-06 5e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+This resulted when we had the sensor input for both Theta and W enabled and H:I(2)
+
+So... using the kinematic definition of velocity measurement just NaN's everything out :c
+
+    
