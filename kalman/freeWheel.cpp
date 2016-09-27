@@ -10,7 +10,7 @@
  */
 double trueTheta = 0;
 double trueW = 10;
-
+double dT = 0.01;
 
 using namespace std;
 
@@ -33,14 +33,16 @@ void updateSystem(double dT){
     trueW = trueW += lazyGauss(0, 0.5*dT); //Speed randomly varies by at most half a degree per second
     trueTheta = (trueTheta + dT*trueW + lazyGauss(0, 1*dT)); //More variance in the position whoo
 }
-VectorXd measureSystem(bool measureW = false) //We have an encoder~
+double oldTheta = 0;
+VectorXd measureSystem(bool measureWAccurately = false) //We have an encoder~
 {
     VectorXd ret(2); ret << trueTheta + lazyGauss(0, 0.1), 0; //At most 1 tenth a degree of error
-    if(measureW){ret(1) = trueW + lazyGauss(0, 0.1);}
+    if(measureWAccurately){ret(1) = trueW + lazyGauss(0, 0.1);}
+    else{ret(1) = (ret(0)-oldTheta)/dT;}
+    oldTheta = ret(1);
     return ret;
 }
 int main(){
-    double dT = 0.01;
     double w = 10; //Degrees / sec
     double theta = 0;
 
