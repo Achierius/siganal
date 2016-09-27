@@ -71,11 +71,11 @@ int main(){
 
     char check = '9';
 
-    while(check != '0'){
+    for(int i = 0; i < 1000; i++){
         updateSystem(dT);
         kalman.updateFilter(measureSystem(), k_u);
-        cout<<"System: Position "<<trueTheta<<", Velocity "<<trueW<<".\n";
-        cout<<"Kalman: Position "<<kalman.getCurrentEstimate()(0)<<", Velocity "<<kalman.getCurrentEstimate()(0)<<".\n";
-//        cin>>check;
+        cout<<"System: Position "<<RED<<trueTheta<<CLOSE<<", Velocity "<<RED<<trueW<<CLOSE<<".\n";
+        cout<<"Kalman: Position "<<RED<<kalman.getCurrentEstimate()(0)<<CLOSE<<", Velocity "<<RED<<kalman.getCurrentEstimate()(1)<<CLOSE<<".\n";
+        cout<<"Percent Error Position: "<<RED<<(kalman.getCurrentEstimate()(0)-trueTheta)/trueTheta<<CLOSE<<", Velocity: "<<RED<<(kalman.getCurrentEstimate()(1)-trueW)/trueW<<CLOSE<<".\n\n";
     }
 }
