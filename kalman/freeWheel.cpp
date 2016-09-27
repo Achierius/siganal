@@ -64,7 +64,7 @@ int main(){
            0, 0.00001;
     
     MatrixXd k_H(2, 2); k_H << 1, 0,
-                                0, 0;
+                                0, 1;
    
 
     KalmanFilter kalman(stateVec, k_P, stateTransition, k_H, k_B, k_Q, k_R, dT);
@@ -78,7 +78,7 @@ int main(){
     int stVn = 0;
     for(i = 0; stX == 0 || stV == 0; i++){
         updateSystem(dT);
-        kalman.updateFilter(measureSystem(), k_u);
+        kalman.updateFilter(measureSystem(true), k_u);
         cout<<"System: Position "<<RED<<trueTheta<<CLOSE<<", Velocity "<<RED<<trueW<<CLOSE<<".\n";
         cout<<"Kalman: Position "<<RED<<kalman.getCurrentEstimate()(0)<<CLOSE<<", Velocity "<<RED<<kalman.getCurrentEstimate()(1)<<CLOSE<<".\n";
         cout<<"Percent Error Position: "<<RED<<(kalman.getCurrentEstimate()(0)-trueTheta)/trueTheta<<CLOSE<<", Velocity: "<<RED<<(kalman.getCurrentEstimate()(1)-trueW)/trueW<<CLOSE<<".\n\n";
