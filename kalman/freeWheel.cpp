@@ -56,11 +56,11 @@ int main(){
     k_P << 0.000001, 0,
            0, 0.000001;
     MatrixXd k_Q(2,2);
-    k_Q << 0.000001, 0,
-           0, 0.000001;
+    k_Q << 0.0000005, 0.000001,
+           0.000001, 0.00005;
     MatrixXd k_R(2,2);
     k_R << 0.000001, 0,
-           0, 0.000001;
+           0, 0.00001;
     
     MatrixXd k_H(2, 2); k_H << 1, 0,
                                 0, 0;
@@ -68,14 +68,25 @@ int main(){
 
     KalmanFilter kalman(stateVec, k_P, stateTransition, k_H, k_B, k_Q, k_R, dT);
 
-
-    char check = '9';
-
-    for(int i = 0; i < 1000; i++){
+    double errorX = 1;
+    double errorV = 1;
+    int i; 
+    int stX = 0;
+    int stXn = 0;
+    int stV = 0;
+    int stVn = 0;
+    for(i = 0; stX == 0 || stV == 0; i++){
         updateSystem(dT);
         kalman.updateFilter(measureSystem(), k_u);
         cout<<"System: Position "<<RED<<trueTheta<<CLOSE<<", Velocity "<<RED<<trueW<<CLOSE<<".\n";
         cout<<"Kalman: Position "<<RED<<kalman.getCurrentEstimate()(0)<<CLOSE<<", Velocity "<<RED<<kalman.getCurrentEstimate()(1)<<CLOSE<<".\n";
         cout<<"Percent Error Position: "<<RED<<(kalman.getCurrentEstimate()(0)-trueTheta)/trueTheta<<CLOSE<<", Velocity: "<<RED<<(kalman.getCurrentEstimate()(1)-trueW)/trueW<<CLOSE<<".\n\n";
+	errorX = (kalman.getCurrentEstimate()(0)-trueTheta)/trueTheta;
+	errorV = (kalman.getCurrentEstimate()(1)-trueW)/trueW;
+	if(abs(errorX)<0.1 && stX==0){stXn++;} else{stXn=0;} if(stXn >= 5){stX=i-stXn;}
+	if(abs(errorV)<0.1 && stV==0){stVn++;} else{stVn=0;} if(stVn >= 5){stV=i-stVn;}
     }
+    cout<<"Settling time V: "<<RED<<stV*dT<<CLOSE<<" X: "<<RED<<stX*dT<<CLOSE<<".\n";
+    cout<<"Covariance of the Process Noise: "<<RED<<endl<<k_Q<<CLOSE<<"\n";
+    cout<<"Covariance of the Sensor Noise: "<<RED<<endl<<k_R<<CLOSE<<"\n";
 }
