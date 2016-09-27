@@ -39,7 +39,7 @@ VectorXd measureSystem(bool measureWAccurately = false) //We have an encoder~
     VectorXd ret(2); ret << trueTheta + lazyGauss(0, 0.1), 0; //At most 1 tenth a degree of error
     if(measureWAccurately){ret(1) = trueW + lazyGauss(0, 0.1);}
     else{ret(1) = (ret(0)-oldTheta)/dT;}
-    oldTheta = ret(1);
+    oldTheta = ret(0);
     return ret;
 }
 int main(){
