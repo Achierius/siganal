@@ -1,0 +1,94 @@
+Testing Results
+
+Test: FreeWheel Settling Time
+
+Settling time V: 7.46 X: 2.13.
+Covariance of the Process Noise: 
+1e-06 1e-07
+1e-07 1e-06
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-06
+
+Settling time V: 2.34 X: 0.95.
+Covariance of the Process Noise: 
+1e-06 1e-07
+1e-07 1e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-06
+    
+Reducing CovPN[0,0] to 1e-05 gave unbounded
+
+Settling time V: 4.08 X: 1.21.
+Covariance of the Process Noise: 
+3e-06 1e-07
+1e-07 1e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-06
+    
+Settling time V: 4.07 X: 1.21.
+Covariance of the Process Noise: 
+3e-06 1e-07
+1e-07 1e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+    
+Settling time V: 4 X: 1.15.
+Covariance of the Process Noise: 
+3e-06 1e-06
+1e-06 1e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+
+Settling time V: 1.79 X: 0.67.
+Covariance of the Process Noise: 
+3e-06 1e-06
+1e-06 5e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+    
+Settling time V: 1.79 X: 0.89.
+Covariance of the Process Noise: 
+3e-06 1e-06
+1e-06 5e-05
+Covariance of the Sensor Noise: 
+1e-05     0
+    0 1e-05
+
+Settling time V: 2.24 X: 0.81.
+Covariance of the Process Noise: 
+5e-06 1e-06
+1e-06 5e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+    
+Settling time V: 1.47 X: 0.6.
+Covariance of the Process Noise: 
+2e-06 1e-06
+1e-06 5e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+    
+Settling time V: 1.02 X: 0.5.
+Covariance of the Process Noise: 
+1e-06 1e-06
+1e-06 5e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+    
+Settling time V: 0.71 X: 0.4.
+Covariance of the Process Noise: 
+5e-07 1e-06
+1e-06 5e-05
+Covariance of the Sensor Noise: 
+1e-06     0
+    0 1e-05
+    
