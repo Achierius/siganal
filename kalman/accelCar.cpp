@@ -5,12 +5,13 @@
 #include <stdlib.h> //rand
 #include <time.h> //rand
 #include <math.h> //erf
+#include <float.h> //DBL_MIN 
 #include <random>
 /*
  * Just a flywheel spinning at some random speed, blank test for kalman.
  */
 double trueX = 0;
-double trueV = 10;
+double trueV = 0;
 double trueA = 0;
 //Assume m = 1kg, accel. = force
 
@@ -22,20 +23,23 @@ using namespace std;
 string RED= "\033[31m";
 string CLOSE = "\e[0m";
 
-void updateSystem(double dT, double accel){
-    normal_distribution<double> theWind(0, 1);
-    std::default_random_engine generator;
-    normal_distribution<double> airResistance(abs(trueV)>10 ? pow(trueV,2)/100 : trueV/100, trueV/10);
+double previousTrueV = 0;
 
-    trueX = trueX + trueV*dT + trueA*dT*dT/2 - theWind(generator)*dT;
-    trueV = trueV + trueA*dT - airResistance(generator)*dT*(trueV/abs(trueV));
-    trueA = accel;
+void updateSystem(double dT, double accel){
+    std::default_random_engine generator;
+    normal_distribution<double> airResistance(abs(trueV)>10 ? pow(trueV,2)/25 : abs(trueV/5), abs(trueV)/10);
+
+    trueX = trueX + trueV*dT + trueA*dT*dT/2;
+    trueV = trueV + trueA*dT - abs(airResistance(generator)*dT)*abs(trueV)/(trueV+DBL_MIN);
+    trueA = accel; //Not actually the full acceleration; JUST that provided by the input. AirResistance provides a dV we don't measure.
 }
 VectorXd measureSystem() 
 {
+    double dV = trueV - previousTrueV;
+    previousTrueV = trueV;
     normal_distribution<double> sensorNoise(0, 0.3);
     std::default_random_engine generator;
-    VectorXd ret(3); ret << 0, 0, trueA+sensorNoise(generator)*dT;
+    VectorXd ret(3); ret << 0, 0, dV/dT+sensorNoise(generator)*dT; //We use kinematics since trueA =/= actual acceleration
     return ret;
 }
 double returnInput(double timeElapsed){
@@ -87,12 +91,13 @@ int main(){
         updateSystem(dT, k_u(0));
         kalman.updateFilter(measureSystem(), k_u);
 	timeElapsed+=dT;
-	if(i%50 == 0){
+	if(i%25 == 0){
 		std::cout<<"Time: "<<i*dT<<endl;
 		std::cout<<"Estimates: Position: "<<RED<<kalman.getCurrentEstimate()(0)<<CLOSE<<" Velocity: "<<RED<<kalman.getCurrentEstimate()(1)<<CLOSE<<" Acceleration: "<<RED<<kalman.getCurrentEstimate()(2)<<CLOSE<<endl;
 		std::cout<<"Actuals: Position: "<<RED<<trueX<<CLOSE<<" Velocity: "<<RED<<trueV<<CLOSE<<" Acceleration: "<<RED<<trueA<<CLOSE<<endl;
 		std::cout<<endl;
 	}
+	if(i==3000){break;}
     }
 }
 	
