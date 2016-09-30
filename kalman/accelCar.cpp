@@ -43,7 +43,7 @@ VectorXd measureSystem()
     return ret;
 }
 double returnInput(double timeElapsed){
-    return timeElapsed < 5 ? 3 : 0;
+    return timeElapsed < 5 ? -3 : 0;
 }
 int main(){
 
@@ -97,7 +97,17 @@ int main(){
 		std::cout<<"Actuals: Position: "<<RED<<trueX<<CLOSE<<" Velocity: "<<RED<<trueV<<CLOSE<<" Acceleration: "<<RED<<trueA<<CLOSE<<endl;
 		std::cout<<endl;
 	}
-	if(i==3000){break;}
+	if(abs(kalman.getCurrentEstimate()(0)-trueX)/trueX < 0.001){
+	    stXn++;
+	    if(stXn>=5){stX = i-stXn;}
+	}
+	else{stXn = 0;}
+	if(abs(kalman.getCurrentEstimate()(1)-trueV)/trueV < 0.001){
+	    stVn++;
+	    if(stVn>=5){stV = i-stVn;}
+	}
+	else{stVn = 0;}
     }
+	std::cout<<"Settling Time: X: "<<RED<<stX<<CLOSE<<" V: "<<RED<<stV<<CLOSE<<".\n";
 }
 	
