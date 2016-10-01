@@ -30,8 +30,8 @@ void updateSystem(double dT, double accel){
     normal_distribution<double> airResistance(abs(trueV)>10 ? pow(trueV,2)/25 : abs(trueV/5), abs(trueV)/10);
 
     trueX = trueX + trueV*dT + trueA*dT*dT/2;
-    trueV = trueV + trueA*dT - abs(airResistance(generator)*dT)*abs(trueV)/(trueV+DBL_MIN);
-    trueA = accel; //Not actually the full acceleration; JUST that provided by the input. AirResistance provides a dV we don't measure.
+    trueV = trueV + trueA*dT;
+    trueA = accel - abs(airResistance(generator))*abs(trueV)/(trueV+DBL_MIN);
 }
 VectorXd measureSystem() 
 {
@@ -39,17 +39,17 @@ VectorXd measureSystem()
     previousTrueV = trueV;
     normal_distribution<double> sensorNoise(0, 0.3);
     std::default_random_engine generator;
-    VectorXd ret(3); ret << 0, 0, dV/dT+sensorNoise(generator)*dT; //We use kinematics since trueA =/= actual acceleration
+    VectorXd ret(3); ret << 0, 0, trueA;///*dV/dT*/+sensorNoise(generator)*dT;
     return ret;
 }
 double returnInput(double timeElapsed){
-    return timeElapsed < 5 ? -3 : 0;
+    return timeElapsed < 5 ? 3 : 0;
 }
 int main(){
 
     MatrixXd stateTransition(3,3);
     stateTransition << 1, dT, dT*dT/2,
-                       0,  1, dT,
+                       0,  1-dT/1000, dT,
 		       0,  0, 1;
     VectorXd stateVec(3);
     stateVec << trueX, trueV/dT, trueA/dT; //Mantain proper rate vs. time
@@ -59,8 +59,8 @@ int main(){
 
     MatrixXd k_P(3, 3); 
     k_P << 0.0000001, 0.000000, 0.000000,
-           0.0000000, 0.000001, 0.000000,
-	   0.0000000, 0.000000, 0.000001;
+           0.0000000, 0.000005, 0.000000,
+	   0.0000000, 0.000000, 0.0001;
     MatrixXd k_Q(3,3);
     k_Q << 0.0000001, 0.000000, 0.000000,
            0.0000000, 0.000001, 0.000000,
@@ -99,12 +99,12 @@ int main(){
 	}
 	if(abs(kalman.getCurrentEstimate()(0)-trueX)/trueX < 0.001){
 	    stXn++;
-	    if(stXn>=5){stX = i-stXn;}
+	    if(stXn>=10){stX = i-stXn;}
 	}
 	else{stXn = 0;}
 	if(abs(kalman.getCurrentEstimate()(1)-trueV)/trueV < 0.001){
 	    stVn++;
-	    if(stVn>=5){stV = i-stVn;}
+	    if(stVn>=10){stV = i-stVn;}
 	}
 	else{stVn = 0;}
     }
