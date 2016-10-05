@@ -1,5 +1,6 @@
 #include "genSys.h"
-
+#include <random>
+#include <chrono>
 
 GenSys::GenSys(VectorXd initState, stateTran, sNoise, controlTran, measTran, VectorXd (*nonLinCom)(VectorXd, VectorXd), double DT){
     setState(initState);
@@ -12,6 +13,12 @@ GenSys::GenSys(VectorXd initState, stateTran, sNoise, controlTran, measTran, Vec
     setdT(DT);
 }
 
+double GenSys::genGauss(double mean, double sd){
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator(seed);
+    std::normal_distribution<double> distribution (mean, sd);
+    return distribution(generator);
+}
 void GenSys::setState(VectorXd s){
     state = s;
     states = s.rows();
@@ -46,5 +53,4 @@ void GenSys::setdT(double dT){
 }
 
 void GenSys::updateFilter(VectorXd controlInput){
-
 }

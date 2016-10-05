@@ -9,6 +9,8 @@ using namespace Eigen;
 public:
     GenSys(VectorXd initState, stateTran, sNoise, controlTran, measTran, VectorXd (*nonLinCom)(VectorXd, VectorXd));
 
+    double genGauss(double mean, double sd);
+
     void setState(VectorXd s);
     void setStateTransition(MatrixXd sT);
 
@@ -31,7 +33,7 @@ private:
     unsigned int states;
     VectorXd sNoiseSD;
 
-    VectorXd (*nonlinearStateComponent)(VectorXd, VectorXd);
+    VectorXd (*nonlinearStateComponent)(VectorXd, VectorXd); //State, previous state
 
     MatrixXd controlTranslation;
     VectorXd control;
