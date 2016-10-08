@@ -1,16 +1,18 @@
 #include "genSys.h"
 #include <random>
 #include <chrono>
+#include <iostream>
 
-GenSys::GenSys(VectorXd initState, stateTran, sNoise, controlTran, measTran, VectorXd (*nonLinCom)(VectorXd, VectorXd), double DT){
+GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise,  VectorXd (*nonLinCom)(VectorXd, VectorXd), double dT){
     setState(initState);
     statePrev = initState;
     setStateTransition(stateTran);
     setSNoiseSD(sNoise);
+    setMNoiseSD(mNoise);
     setControlTranslation(controlTran);
     setMeasurementTranslation(measTran);
     nonlinearStateComponent = nonLinCom;
-    setdT(DT);
+    setdT(dT);
 }
 
 double GenSys::genGauss(double mean, double sd){
@@ -53,4 +55,17 @@ void GenSys::setdT(double dT){
 }
 
 void GenSys::updateFilter(VectorXd controlInput){
+    statePrev = state;
+    state = stateTransition*state + controlTranslation*controlInput + nonlinearStateComponent(state, statePrev);
+    VectorXd noise(states);
+    for(int i = 0; i < states; i++){
+        noise[i] = genGauss(0, sNoiseSD(i));
+    }
+    state += noise;
+
+    measurement = measurementTranslation*state;
+    for(int i = 0; i < states; i++){
+        noise[i] = genGauss(0, mNoiseSD(i));
+    }
+    measurement += noise;
 }

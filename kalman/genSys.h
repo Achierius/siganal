@@ -3,11 +3,12 @@
 
 #include "./eigen/Eigen/Dense"
 
-class GenSys{
 using namespace Eigen;
 
+class GenSys{
+
 public:
-    GenSys(VectorXd initState, stateTran, sNoise, controlTran, measTran, VectorXd (*nonLinCom)(VectorXd, VectorXd));
+    GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise, VectorXd (*nonLinCom)(VectorXd, VectorXd), double DT);
 
     double genGauss(double mean, double sd);
 
