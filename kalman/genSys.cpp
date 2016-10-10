@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 
-GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise,  VectorXd (*nonLinCom)(VectorXd, VectorXd), double dT){
+GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise,  VectorXd (*nonLinCom)(VectorXd, VectorXd, double), double dT){
     setState(initState);
     statePrev = initState;
     setStateTransition(stateTran);
@@ -56,7 +56,7 @@ void GenSys::setdT(double dT){
 
 void GenSys::updateFilter(VectorXd controlInput){
     statePrev = state;
-    state = stateTransition*state + controlTranslation*controlInput + nonlinearStateComponent(state, statePrev);
+    state = stateTransition*state + controlTranslation*controlInput + nonlinearStateComponent(state, statePrev, dT);
     VectorXd noise(states);
     for(int i = 0; i < states; i++){
         noise[i] = genGauss(0, sNoiseSD(i));
