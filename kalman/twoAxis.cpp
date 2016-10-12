@@ -55,4 +55,16 @@ int main(){
     VectorXd processNoiseSd(4); processNoiseSd << 5*mu, 5*mu, 5*mu, 5*mu;
 
     GenSys system(initialState, trueTransition, processNoiseSd, trueControlMap, trueSensorMap, sensorNoiseSd, &airMovement, dT, mass);
+
+    double timeLimit = 10;
+    double interval = 0.5;
+    for(int i = 0; i < timeLimit/dT; i++){
+        system.updateFilter(controlInput(i*dT));
+	if(i%((int)(0.5/dT)) == 0){
+	    cout<<"Position: "<<system.getMeasurement()(0)<<", "<<system.getMeasurement()(3)<<".\n";
+	    cout<<"Velocity: "<<system.getMeasurement()(1)<<", "<<system.getMeasurement()(4)<<".\n";
+	}
+    }
+    cout<<"Position: "<<system.getMeasurement()(0)<<", "<<system.getMeasurement()(3)<<".\n";
+    cout<<"Velocity: "<<system.getMeasurement()(1)<<", "<<system.getMeasurement()(4)<<".\n";
 }
