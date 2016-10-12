@@ -8,7 +8,7 @@ using namespace Eigen;
 class GenSys{
 
 public:
-    GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise, VectorXd (*nonLinCom)(VectorXd, VectorXd, double, double), double DT);
+    GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise, VectorXd (*nonLinCom)(VectorXd, VectorXd, double, double), double DT, double mass);
 
     double genGauss(double mean, double sd);
 
@@ -25,6 +25,7 @@ public:
     VectorXd getMeasurement();
 
     void setdT(double dT);
+    void setMass(double mass);
 
     void updateFilter(VectorXd controlInput);
 private:
@@ -44,6 +45,7 @@ private:
     VectorXd mNoiseSD;
 
     double dT;
+    double mass;
 };
 
 #endif//__SIGANAL_GENSYS_H

@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 
-GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise,  VectorXd (*nonLinCom)(VectorXd, VectorXd, double, double), double dT){
+GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise,  VectorXd (*nonLinCom)(VectorXd, VectorXd, double, double), double dT, double mass){
     setState(initState);
     statePrev = initState;
     setStateTransition(stateTran);
@@ -13,8 +13,11 @@ GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd
     setMeasurementTranslation(measTran);
     nonlinearStateComponent = nonLinCom;
     setdT(dT);
+    setMass(mass);
 }
-
+double genSys::setMass(double mass){
+    mass = mass;
+}
 double GenSys::genGauss(double mean, double sd){
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
@@ -56,7 +59,7 @@ void GenSys::setdT(double dT){
 
 void GenSys::updateFilter(VectorXd controlInput){
     statePrev = state;
-    state = stateTransition*state + controlTranslation*controlInput + nonlinearStateComponent(state, statePrev, dT);
+    state = stateTransition*state + controlTranslation*controlInput + nonlinearStateComponent(state, statePrev, dT, mass);
     VectorXd noise(states);
     for(int i = 0; i < states; i++){
         noise[i] = genGauss(0, sNoiseSD(i));
