@@ -27,7 +27,7 @@ int main(){
         MatrixXd h(2,2); h << 1, 0, 0, 1;
 	MatrixXd b(2,1); b << dT*dT/2, dT;
 	
-	GenSys sys(state, st, q, b, h, r, &airResistance, dT);
+	GenSys sys(state, st, q, b, h, r, &airResistance, dT, 1);
 
 	for(int i = 0; i < 10000; i++){
 		sys.updateFilter(controlInput(i*dT));
