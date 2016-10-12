@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 
-GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise,  VectorXd (*nonLinCom)(VectorXd, VectorXd, double), double dT){
+GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd controlTran, MatrixXd measTran, VectorXd mNoise,  VectorXd (*nonLinCom)(VectorXd, VectorXd, double, double), double dT){
     setState(initState);
     statePrev = initState;
     setStateTransition(stateTran);
