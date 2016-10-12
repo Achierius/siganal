@@ -15,7 +15,7 @@ GenSys::GenSys(VectorXd initState, MatrixXd stateTran, VectorXd sNoise, MatrixXd
     setdT(dT);
     setMass(mass);
 }
-void genSys::setMass(double mass){
+void GenSys::setMass(double mass){
     mass = mass;
 }
 double GenSys::genGauss(double mean, double sd){
