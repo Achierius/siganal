@@ -65,7 +65,7 @@ int main(){
 	//    cout<<"Velocity: "<<system.getMeasurement()(1)<<", "<<system.getMeasurement()(4)<<".\n";
 	}
     }
-    cout<<"Position: "<<system.getMeasurement()(0)<<", "<<system.getMeasurement()(2)<<".\n";
+    cout<<"Position: "<<system.getMeasurement()(0)<<", "<<system.getMeasurement()(1)<<".\n";
     cout<<system.getMeasurement()<<endl;
     //cout<<"Velocity: "<<system.getMeasurement()(1)<<", "<<system.getMeasurement()(4)<<".\n";
 }
