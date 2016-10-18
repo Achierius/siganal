@@ -65,10 +65,10 @@ void GenSys::updateFilter(VectorXd controlInput){
         noise[i] = genGauss(0, sNoiseSD(i));
     }
     state += noise;
-
     measurement = measurementTranslation*state;
-    for(int i = 0; i < states; i++){
-        noise[i] = genGauss(0, mNoiseSD(i));
+    VectorXd mnoise(measurementTranslation.rows());
+    for(int i = 0; i < mnoise.rows(); i++){
+        mnoise[i] = genGauss(0, mNoiseSD(i));
     }
-    measurement += noise;
+    measurement += mnoise;
 }

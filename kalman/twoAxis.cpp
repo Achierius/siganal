@@ -51,7 +51,7 @@ int main(){
 						     0, vC;
     MatrixXd trueSensorMap(2, 4); trueSensorMap << 1, 0, 0, 0,
 						   0, 0, 1, 0;
-    VectorXd sensorNoiseSd(4); sensorNoiseSd << 3*mu, 3*mu, 3*mu, 3*mu;
+    VectorXd sensorNoiseSd(2); sensorNoiseSd << 3*mu, 3*mu;//, 3*mu, 3*mu;
     VectorXd processNoiseSd(4); processNoiseSd << 5*mu, 5*mu, 5*mu, 5*mu;
 
     GenSys system(initialState, trueTransition, processNoiseSd, trueControlMap, trueSensorMap, sensorNoiseSd, &airMovement, dT, mass);
@@ -61,10 +61,11 @@ int main(){
     for(int i = 0; i < timeLimit/dT; i++){
         system.updateFilter(controlInput(i*dT));
 	if(i%((int)(0.5/dT)) == 0){
-	    cout<<"Position: "<<system.getMeasurement()(0)<<", "<<system.getMeasurement()(3)<<".\n";
-	    cout<<"Velocity: "<<system.getMeasurement()(1)<<", "<<system.getMeasurement()(4)<<".\n";
+	    cout<<"Position: "<<system.getMeasurement()(0)<<", "<<system.getMeasurement()(1)<<".\n";
+	//    cout<<"Velocity: "<<system.getMeasurement()(1)<<", "<<system.getMeasurement()(4)<<".\n";
 	}
     }
-    cout<<"Position: "<<system.getMeasurement()(0)<<", "<<system.getMeasurement()(3)<<".\n";
-    cout<<"Velocity: "<<system.getMeasurement()(1)<<", "<<system.getMeasurement()(4)<<".\n";
+    cout<<"Position: "<<system.getMeasurement()(0)<<", "<<system.getMeasurement()(2)<<".\n";
+    cout<<system.getMeasurement()<<endl;
+    //cout<<"Velocity: "<<system.getMeasurement()(1)<<", "<<system.getMeasurement()(4)<<".\n";
 }
