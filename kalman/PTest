@@ -10,7 +10,7 @@ with the Kalman gain defined as:
   K = P._H'(HP._H'+R)^
 If we compile these equations together, we obtain the overall evolution of the 
 P covariance matrix per time-step:
-  P. = (I-((FPF'+Q)H'(H(FPF'+Q)H' + R)^)H)(FPF'+Q)
+  P. = (I-((FPF'+Q)H'(H(FPF'+Q)H'+R)^)H)(FPF'+Q)
 The included matrices, obviously, consist only of:
   I, F, P, Q, H, R.
 None of these vary per time-step. 
@@ -23,3 +23,39 @@ HPH' + R is just the sensor reading covariance, and PH'... huh.
 I've developed a calculator in kGainCalc.cpp that'll allow us to calculate how
 K changes as P, H, and R change. In an ideal situation, the P matrix will shrink
 as time goes on, given the convergingly accurate nature of the filter.
+oh lul
+As H->I, K-> P(P+R)^. If P goes to 0, this goes to the 0 matrix.
+Where do we use K?
+  x. = x._ + Ky
+So yeah. Basically, as time goes on, we just... trust our predictions more and
+more automatically.
+Great.
+So theoretically, there should be a final settling point, ja?
+I don't really know how to calculate that neatly, so I guess we can just run
+through the iterations before beginning the actual filter to obtain some sort of
+steady-state P matrix. 
+Looking at the compact evolution of P again, assuming H~I to clarify things:
+  P. = (I-((FPF'+Q)(FPF'+Q+R)^))(FPF'+Q) =
+  (FPF' + Q) - (FPF'+Q)(FPF'+Q)/(FPF'+Q+R)
+eh, that last distribution wasn't super helpful.
+The important parts of this are:
+  1. I-(FPF'+Q)/(FPF'+Q+R)
+  and
+  2. (FPF'+Q)
+Each timestep, if we ignore the affect of section 1. on the evolution,
+the covariance is scaled outwards with via the evolution of our mean prediction:
+<FPF'> just a specific instance of the general identity relating to the
+multiplication of a covariance matrix' subject vector (x) by a matrix (F)--
+  P(Fx) = FP(x)F'
+This, in addition to the addition of the Q matrix, expands our P matrix each
+step and decreases our certainty. The containing factor, then, is section 1:
+furthermore, this section is the one where any efforts to 'tune' the end state
+of the filter would come in to play, given the unique presence of Q and 
+matrices. It's a pretty simple equation: We're just defining a sort of 'fractional'
+'scaling factor' to the <FPF'+Q> section, bringing down the expansion with each
+timestep. The factor is determined by a 'ratio' of <FPF'+Q> and <FPF'+Q+R>: if
+R->0, the term goes to I and section 1. goes to 0, dropping our P matrix to '0'.
+ugh.
+So really this whole thing can be expressed as a time-processed ratio between
+Q and R, dampened by the initial estimate of P. Gr8.
+Testing time I guess.
