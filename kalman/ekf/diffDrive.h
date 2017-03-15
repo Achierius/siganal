@@ -24,14 +24,14 @@ namespace akf_sim{
      void stepDrive();
      
      enum states{
-       xPos,
-       yPos,
-       theta,
-       omega,
-       radius,
-       Sl,
-       Sr,
-       Stot
+       xPos,  //X: Absolute position from origin, horizontal (short length of field)
+       yPos,  //Y: Absolute position from origin, vertical (long length of field)
+       theta, //θ: Absolute rotative position of robot
+       omega, //w: Angular speed around the drive circle
+       radius,//R: Radius of generated drive circle around which the robot drives, determined by Sl and Sr
+       Sl,    //Sl: Forward linearized velocity of Left Wheel
+       Sr,    //Sr: Forward linearized velocity of Right Wheel
+       Stot   //Stot: Total forward linearized velocity, derived from Sl & Sr
      };
 
    private: 
@@ -57,9 +57,9 @@ namespace akf_sim{
      double _rightWheelDistance; //Continously integrated; not a state variable, so not included in _state, but used in simulating Encoder readings.
 
      /* State Transition Functions */
-     void updateAbsolutePosition();
-     void updateAngularStatistics();
-     void updateForwardVelocities();
+     void updateAbsolutePosition(); //Updates X, Y
+     void updateAngularStatistics(); //Updates Theta, Omega, Radius -- Radius is of the driving-circle and thus included in Angular Statistics
+     void updateForwardVelocities(); //Sl, Sr, Stot -- wheel velocities, Left and Right, as well as overall forward velocity.
  
  }
 }
