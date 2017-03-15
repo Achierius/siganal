@@ -14,12 +14,14 @@ namespace akf_sim{
  class differential_drive{
    public:
      differential_drive(const double dT, const double length,
-                        const double kV, const double kT, const double mR, const double mJ,
+                        const double kV, const double kT, const double mR, const double mJ, const double mr,
                         const double mass = 0, const double momentOfInertia = 0);
 
      void setInputs(const double leftVoltage, const double rightVoltage);
      void driveStraight(const double voltage);
      void quickTurn(const double voltage); //Assigned to left motor; positive turns clockwise, negative turns counterclockwise.
+
+     double getValue(const y2017::akf_sim::states index) const;
 
      void stepDrive();
      
@@ -28,7 +30,7 @@ namespace akf_sim{
        yPos,  //Y: Absolute position from origin, vertical (long length of field)
        theta, //θ: Absolute rotative position of robot
        omega, //w: Angular speed around the drive circle
-       radius,//R: Radius of generated drive circle around which the robot drives, determined by Sl and Sr
+       r,//R: Radius of generated drive circle around which the robot drives, determined by Sl and Sr
        Sl,    //Sl: Forward linearized velocity of Left Wheel
        Sr,    //Sr: Forward linearized velocity of Right Wheel
        Stot   //Stot: Total forward linearized velocity, derived from Sl & Sr
@@ -48,6 +50,7 @@ namespace akf_sim{
      double _kT; //Motor Torque Constant
      double _mR; //Motor internal electrical resistance
      double _mJ; //Motor driven wheel moment of Inertia
+     double _mr; //Motor-driven wheel radius
 
      /* Dynamic System Information */
      Eigen::Vector2d _inputs; //Left Motor Voltage, Right Motor Voltage
