@@ -13,8 +13,18 @@ namespace y2017{
 namespace akf_sim{
  class differential_drive{
    public:
-   private:
-     double dT; //Milliseconds
+     differential_drive(const double dT, const double length,
+                        const double kV, const double kT, const double mR, const double mJ,
+                        const double mass = 0, const double momentOfInertia = 0);
+
+     void setInputs(const double leftVoltage, const double rightVoltage);
+     void driveStraight(const double voltage);
+     void quickTurn(const double voltage); //Assigned to left motor; positive turns clockwise, negative turns counterclockwise.
+
+     void stepDrive();
+
+   private: 
+     double _dT; //Milliseconds
 
      /* Drive Characteristics */
      double _chassisLength; //Distance between left wheel and right wheel across the axle
@@ -26,6 +36,7 @@ namespace akf_sim{
      double _kV; //Motor Voltage Constant
      double _kT; //Motor Torque Constant
      double _mR; //Motor internal electrical resistance
+     double _mJ; //Motor driven wheel moment of Inertia
 
      /* Dynamic System Information */
      Eigen::Vector2d _inputs; //Left Motor Voltage, Right Motor Voltage
@@ -34,6 +45,11 @@ namespace akf_sim{
      double _leftWheelDistance;
      double _rightWheelDistance; //Continously integrated; not a state variable, so not included in _state, but used in simulating Encoder readings.
 
+     /* State Transition Functions */
+     void updateAbsolutePosition();
+     void updateAngularStatistics();
+     void updateForwardVelocities();
+ 
  }
 }
 }
