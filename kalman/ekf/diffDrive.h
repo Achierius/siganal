@@ -22,6 +22,17 @@ namespace akf_sim{
      void quickTurn(const double voltage); //Assigned to left motor; positive turns clockwise, negative turns counterclockwise.
 
      void stepDrive();
+     
+     enum states{
+       xPos,
+       yPos,
+       theta,
+       omega,
+       radius,
+       Sl,
+       Sr,
+       Stot
+     };
 
    private: 
      double _dT; //Milliseconds
