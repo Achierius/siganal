@@ -5,7 +5,8 @@
 
 y2017::akf_sim::differential_drive::differential_drive(const double dT, const double length,
                                                        const double kV, const double kT, const double mR, const double mJ, const double mr,
-                                                       const double mass, const double momentOfInertia){
+                                                       const double mass, const double momentOfInertia,
+                                                       const Eigen::VectorXd& initialStates){
   _dT = dT;
   _chassisLength = length;
   _kV = kV;
@@ -15,6 +16,18 @@ y2017::akf_sim::differential_drive::differential_drive(const double dT, const do
   _mr = mr;
   _mass = mass;
   _J = momentOfInertia;
+
+  _state.resize(8);
+  if(initialStates.size() != 8){
+    for(int i = 0; i < 8; i++){
+      _state[i] = 0;
+    }
+  } 
+  else{
+    for(int i = 0; i < 8; i++){
+      _state[i] = initialStates[i];
+    }
+  }
 }
 
 void y2017::akf_sim::differential_drive::setInputs(const double leftVoltage, const double rightVoltage){

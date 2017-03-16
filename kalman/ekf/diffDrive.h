@@ -15,7 +15,8 @@ namespace akf_sim{
    public:
      differential_drive(const double dT, const double length,
                         const double kV, const double kT, const double mR, const double mJ, const double mr,
-                        const double mass = 0, const double momentOfInertia = 0);
+                        const double mass, const double momentOfInertia,
+                        const Eigen::VectorXd& initialStates);
 
      void setInputs(const double leftVoltage, const double rightVoltage);
      void driveStraight(const double voltage);
