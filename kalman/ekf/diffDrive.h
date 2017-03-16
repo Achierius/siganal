@@ -21,7 +21,7 @@ namespace akf_sim{
      void driveStraight(const double voltage);
      void quickTurn(const double voltage); //Assigned to left motor; positive turns clockwise, negative turns counterclockwise.
 
-     double getValue(const y2017::akf_sim::states index) const;
+     double getValue(const double index) const;
 
      void stepDrive();
      
@@ -54,8 +54,8 @@ namespace akf_sim{
 
      /* Dynamic System Information */
      Eigen::Vector2d _inputs; //Left Motor Voltage, Right Motor Voltage
-     Eigen::Vector8d _state; //X, Y, θ, ω, Radius, Speed of Left Wheel, Speed of Right Wheel, Speed Total Forward
-     Eigen::Vector8d _statePrev;
+     Eigen::VectorXd _state; //X, Y, θ, ω, Radius, Speed of Left Wheel, Speed of Right Wheel, Speed Total Forward
+     Eigen::VectorXd _statePrev;
      double _leftWheelDistance;
      double _rightWheelDistance; //Continously integrated; not a state variable, so not included in _state, but used in simulating Encoder readings.
 
@@ -64,7 +64,7 @@ namespace akf_sim{
      void updateAngularStatistics(); //Updates Theta, Omega, Radius -- Radius is of the driving-circle and thus included in Angular Statistics
      void updateForwardVelocities(); //Sl, Sr, Stot -- wheel velocities, Left and Right, as well as overall forward velocity.
  
- }
+ };
 }
 }
 
