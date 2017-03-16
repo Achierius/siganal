@@ -67,6 +67,6 @@ void y2017::akf_sim::differential_drive::updateAngularStatistics(){ //All of the
 }
 void y2017::akf_sim::differential_drive::updateForwardVelocities(){ //Below equations are derived from DC Motor equations, assuming left/right identical motor constants and L~0.
   _state[Sr] = _statePrev[Sr] + _dT*(-1*_kT/_kV * 1/(_mR*_mJ)*_statePrev[Sr] + _kT/(_mr*_mR*_mJ)*(_inputs[1]));
-  _state[Sr] = _statePrev[Sl] + _dT*(-1*_kT/_kV * 1/(_mR*_mJ)*_statePrev[Sl] + _kT/(_mr*_mR*_mJ)*(_inputs[0]));
+  _state[Sl] = _statePrev[Sl] + _dT*(-1*_kT/_kV * 1/(_mR*_mJ)*_statePrev[Sl] + _kT/(_mr*_mR*_mJ)*(_inputs[0]));
 }
 
