@@ -64,9 +64,25 @@ void y2017::akf_sim::differential_drive::updateAngularStatistics(){ //All of the
   _state[omega] = (_statePrev[Sr]-_statePrev[Sl])/_chassisLength;
   _state[r] = _chassisLength/2 * (_statePrev[Sr] + _statePrev[Sl])/(_statePrev[Sr] - _statePrev[Sl]); //Notice that Omega and R are calculated instantaneously, rather than via
   _state[theta] = _statePrev[theta] + _statePrev[omega]*_dT;                                          //integration. 
+  _state[theta] = regulateTheta(_state[theta]);
 }
 void y2017::akf_sim::differential_drive::updateForwardVelocities(){ //Below equations are derived from DC Motor equations, assuming left/right identical motor constants and L~0.
   _state[Sr] = _statePrev[Sr] + _dT*(-1*_kT/_kV * 1/(_mR*_mJ)*_statePrev[Sr] + _kT/(_mr*_mR*_mJ)*(_inputs[1]));
   _state[Sl] = _statePrev[Sl] + _dT*(-1*_kT/_kV * 1/(_mR*_mJ)*_statePrev[Sl] + _kT/(_mr*_mR*_mJ)*(_inputs[0]));
+}
+
+double y2017::akf_sim::differential_drive::regulateTheta(const double& inputTheta){
+  const double ANGULAR_LIMIT = 3.1415926535897932384626433832; //Thanks Chris; It's in Radians, 180 degrees = pi
+  double outputTheta = inputTheta; 
+
+  int moduloFactor = std::floor(std::abs(outputTheta)/(2*ANGULAR_LIMIT));
+  int signNum = std::abs(outputTheta)/outputTheta;
+  outputTheta += -1*signNum*moduloFactor*(2*ANGULAR_LIMIT); //Limits the range to -360 to 360 degrees, -2pi to 2pi.
+  
+  if(std::abs(outputTheta) > ANGULAR_LIMIT){ //Limits the range to -180 to 180, -pi to pi.
+    outputTheta = (outputTheta-signNum*ANGULAR_LIMIT)*-1;
+  }
+
+  return outputTheta;
 }
 

@@ -37,6 +37,8 @@ namespace akf_sim{
        Stot   //Stot: Total forward linearized velocity, derived from Sl & Sr
      };
 
+     double regulateTheta(const double& inputTheta);
+
    private: 
      double _dT; //Milliseconds
 
