@@ -3,6 +3,7 @@
 
 #include <cstdarg>
 #include <vector>
+#include "./eigen/Eigen/Dense"
 
 namespace ekf_mass{
 
@@ -14,10 +15,10 @@ public:
 
   Eigen::VectorXd operator()(Eigen::VectorXd parameter);
   const std::function<double(Eigen::VectorXd)>
-               operator[](unsigned int i) const { return _vf[i]; }
+               operator[](unsigned int i) const { return _vector[i]; }
   void setParameter(unsigned int index, double (*function)(Eigen::VectorXd));
 private:
-  using double (*)(Eigen::VectorXd) _vf; 
+  typedef double (*_vf)(Eigen::VectorXd);
   _vf* _vector;
   unsigned int _states;
 };

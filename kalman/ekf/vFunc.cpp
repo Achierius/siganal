@@ -1,27 +1,31 @@
 #include "vFunc.hpp"
 #include <iostream>
 
-vFunc::vFunc(unsigned int states) {
+ekf_mass::vFunc::vFunc(unsigned int states) {
   _vector = new _vf[states];
   _states = states;
 }
-vFunc::~vFunc() {
-  delete _vf;
+
+ekf_mass::vFunc::~vFunc() {
+  delete [] _vector;
 }
 
-Eigen::VectorXd vFunc::operator()(Eigen::VectorXd parameter) {
+Eigen::VectorXd ekf_mass::vFunc::operator()(Eigen::VectorXd parameter) {
+  if(parameter.size() != _states) {
+    std::cerr<<"vFunc application call failed; parameter vector of unmatched size "<<parameter.size()<<"; desired rows "<<_states<<std::endl;
+  }
   Eigen::VectorXd _m(_states);
   for(int i = 0; i < _states; i++) {
-    _m(i, 1) = (_vector[i])(parameter);
+    _m(i) = (_vector[i])(parameter);
   }
  return _m;
 }
 
-void vFunc::setParameter(unsigned int index, double (*function)(Eigen::VectorXd)) {
-  if(index < _states && index > 0) {
-    _m[index] = function;
+void ekf_mass::vFunc::setParameter(unsigned int index, double (*function)(Eigen::VectorXd)) {
+  if(index < _states && index >= 0) {
+    _vector[index] = function;
   }
   else {
-    cerr<<"vFunc setParameter() call index out of bounds; _states = "<<_states<<std::endl;
+    std::cerr<<"vFunc setParameter() call index out of bounds; _states = "<<_states<<std::endl;
   }
 }
