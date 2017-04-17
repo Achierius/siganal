@@ -1,5 +1,5 @@
-#ifndef __MASS_AKF_HPP
-#define __MASS_AKF_HPP
+#ifndef __MASS_EKF_HPP
+#define __MASS_EKF_HPP
 
 #include <iostream>
 #include <cmath>
@@ -7,10 +7,11 @@
 #include <cstdio>
 #include "./eigen/Eigen/Dense"
 
-namespace akf_mass{
+namespace ekf_mass{
 
-  class akf{
+  class ekf{
     public:
+      ekf(int states, 
     private:
       int _states;
       int _measurements;
@@ -34,4 +35,4 @@ namespace akf_mass{
 
 }
 
-#endif//__MASS_AKF_HPP
+#endif//__MASS_EKF_HPP
