@@ -1,14 +1,42 @@
 #include "vFunc.hpp"
 #include <iostream>
 
+ekf_mass::vFunc::vFunc() {
+  _vector = new _vf[1];
+  _states = states;
+}
+
 ekf_mass::vFunc::vFunc(unsigned int states) {
   _vector = new _vf[states];
   _states = states;
 }
 
+ekf_mass::vFunc::vFunc(const vFunc& object) {
+  _vector = new _vf[object.getStates()];
+  _states = object.getStates();
+  for(int i = 0; i < _states; i++) {
+    _vector[i] = object[i];
+  }
+}
+
 ekf_mass::vFunc::~vFunc() {
   delete [] _vector;
 }
+
+vFunc& ekf_mass::vFunc::operator = (const vFunc& object) {
+  this->resize(object.getStates());
+  for(int i = 0; i < _states; i++) {
+    _vector[i] = object[i];
+  }
+}
+
+
+ekf_mass::vFunc::resize(unsigned int states) {
+  delete [] _vector;
+  _vector = new _vf[states];
+  _states = states;
+}
+
 
 Eigen::VectorXd ekf_mass::vFunc::operator()(Eigen::VectorXd parameter) {
   if(parameter.size() != _states) {
