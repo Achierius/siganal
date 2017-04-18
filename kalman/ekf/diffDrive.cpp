@@ -59,16 +59,30 @@ void y2017::akf_sim::differential_drive::updateAbsolutePosition(){
    _state[xPos] = _statePrev[xPos] + _statePrev[Stot]*std::cos(_statePrev[theta]+_statePrev[omega]*_dT/2);
    _state[yPos] = _statePrev[yPos] + _statePrev[Stot]*std::sin(_statePrev[theta]+_statePrev[omega]*_dT/2); //The w*t/2 is just mini-euler'ing the linearization
 }
-void y2017::akf_sim::differential_drive::updateAngularStatistics(){ //All of the following relations are derived from the base relation of a differential drive-train: omega of the left wheel = omega of 
-                                                //the right wheel, assuming that the entire body will drive in a perfect circle with any differential in wheel-driving-voltages.
+void y2017::akf_sim::differential_drive::updateAngularStatistics(){ //All of the following relations are derived from the base relation of a differential drive-train: omega of the left
+                                                                    //wheel = omega of the right wheel, assuming that the entire body will drive in a perfect circle with
+                                                                    //any differential in wheel-driving-voltages.
+  double NO_DIVIDE_BY_ZERO = 0.000001;
   _state[omega] = (_statePrev[Sr]-_statePrev[Sl])/_chassisLength;
-  _state[r] = _chassisLength/2 * (_statePrev[Sr] + _statePrev[Sl])/(_statePrev[Sr] - _statePrev[Sl]); //Notice that Omega and R are calculated instantaneously, rather than via
-  _state[theta] = _statePrev[theta] + _statePrev[omega]*_dT;                                          //integration. 
+  _state[r] = _chassisLength/2 * (_statePrev[Sr] + _statePrev[Sl])/(_statePrev[Sr] - _statePrev[Sl] + NO_DIVIDE_BY_ZERO); //Notice that Omega and R are calculated instantaneously, 
+  _state[theta] = _statePrev[theta] + _statePrev[omega]*_dT;                                                              //rather than via integration. 
   _state[theta] = regulateTheta(_state[theta]);
 }
 void y2017::akf_sim::differential_drive::updateForwardVelocities(){ //Below equations are derived from DC Motor equations, assuming left/right identical motor constants and L~0.
-  _state[Sr] = _statePrev[Sr] + _dT*(-1*_kT/_kV * 1/(_mR*_mJ)*_statePrev[Sr] + _kT/(_mr*_mR*_mJ)*(_inputs[1]));
-  _state[Sl] = _statePrev[Sl] + _dT*(-1*_kT/_kV * 1/(_mR*_mJ)*_statePrev[Sl] + _kT/(_mr*_mR*_mJ)*(_inputs[0]));
+  double CONSOLIDATED_MOTOR_CONSTANT = _kT/_kV * 1/(_mR*_mJ);
+  double CMC = CONSOLIDATED_MOTOR_CONSTANT;
+  double LOOP_DIFFERENCE = 0.001; //0.1 MS
+
+  double sr = _statePrev[Sr];
+  double sl = _statePrev[Sl];
+  for(double i = 0; i < _dT/LOOP_DIFFERENCE; i++){
+    sr += LOOP_DIFFERENCE*CMC*(_kV*_inputs[1]-_statePrev[Sr]);
+    sl += _statePrev[Sl] + LOOP_DIFFERENCE*CMC*(_kV*_inputs[0]-_statePrev[Sl]);
+  }
+  _state[Sr] = sr;
+  _state[Sl] = sl;
+
+  _state[Stot] = _state[Sr]/2 + _state[Sl]/2;
 }
 
 double y2017::akf_sim::differential_drive::regulateTheta(const double& inputTheta){

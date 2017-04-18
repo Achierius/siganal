@@ -13,7 +13,7 @@ namespace y2017{
 namespace akf_sim{
  class differential_drive{
    public:
-     differential_drive(const double dT, const double length,
+     differential_drive(const double dT, const double length, //Seconds, Meters
                         const double kV, const double kT, const double mR, const double mJ, const double mr,
                         const double mass, const double momentOfInertia,
                         const Eigen::VectorXd& initialStates);
