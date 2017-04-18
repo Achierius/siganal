@@ -12,7 +12,7 @@ public:
   vFunc();
   vFunc(unsigned int states);
   vFunc(const vFunc& object);
-//vFunc(unsigned int states, ... );  /* TODO */
+  //vFunc(unsigned int states, ... );  /* TODO */
   ~vFunc();
   vFunc& operator = (const vFunc& object);
 

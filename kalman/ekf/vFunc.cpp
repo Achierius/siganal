@@ -19,6 +19,12 @@ ekf_mass::vFunc::vFunc(const vFunc& object) {
   }
 }
 
+/*ekf_mass::vFunc::vFunc(unsigned int states, ... ) {
+  va_start;
+  
+}*/
+
+
 ekf_mass::vFunc::~vFunc() {
   delete [] _vector;
 }
