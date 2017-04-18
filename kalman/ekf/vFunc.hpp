@@ -25,12 +25,15 @@ public:
 
   void setParameter(unsigned int index, double (*function)(Eigen::VectorXd));
   unsigned int getStates() const { return _states; }
-
-  double f_zero(Eigen::VectorXd parameter){ return 0; }
-  double f_one(Eigen::VectorXd parameter){ return 1; }
+  
+  static _vf zero(){ return &f_zero; }
+  static _vf one(){ return &f_one; }
 private:
   _vf* _vector;
   unsigned int _states;
+
+  static double f_zero(Eigen::VectorXd parameter) { return 0; }
+  static double f_one(Eigen::VectorXd parameter) { return 1; }
 };
 
 }

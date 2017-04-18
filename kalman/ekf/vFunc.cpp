@@ -3,7 +3,7 @@
 
 ekf_mass::vFunc::vFunc() {
   _vector = new _vf[1];
-  _states = states;
+  _states = 1;
 }
 
 ekf_mass::vFunc::vFunc(unsigned int states) {
@@ -23,7 +23,7 @@ ekf_mass::vFunc::~vFunc() {
   delete [] _vector;
 }
 
-vFunc& ekf_mass::vFunc::operator = (const vFunc& object) {
+ekf_mass::vFunc& ekf_mass::vFunc::operator = (const vFunc& object) {
   this->resize(object.getStates());
   for(int i = 0; i < _states; i++) {
     _vector[i] = object[i];
@@ -31,7 +31,7 @@ vFunc& ekf_mass::vFunc::operator = (const vFunc& object) {
 }
 
 
-ekf_mass::vFunc::resize(unsigned int states) {
+void ekf_mass::vFunc::resize(unsigned int states) {
   delete [] _vector;
   _vector = new _vf[states];
   _states = states;
