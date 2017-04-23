@@ -1,17 +1,18 @@
-#ifndef __MASS_EKF_HPP
-#define __MASS_EKF_HPP
+#ifndef __MASS_UKF_HPP
+#define __MASS_UKF_HPP
 
 #include <iostream>
 #include <cmath>
 #include <ctime>
 #include <cstdio>
 #include "./eigen/Eigen/Dense"
+#include "./include/vFunc.hpp"
 
-namespace ekf_mass{
+namespace ukf_mass{
 
-  class ekf{
+  class ukf{
     public:
-      ekf(int states, 
+      ukf(int states, 
     private:
       int _states;
       int _measurements;
@@ -35,4 +36,4 @@ namespace ekf_mass{
 
 }
 
-#endif//__MASS_EKF_HPP
+#endif//__MASS_UKF_HPP
