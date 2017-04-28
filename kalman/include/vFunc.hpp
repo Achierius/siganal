@@ -5,7 +5,7 @@
 #include <vector>
 #include "./eigen/Eigen/Dense"
 
-namespace ekf_mass{
+namespace ukf_mass{
 
 class vFunc {
 public:
