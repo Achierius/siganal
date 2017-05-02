@@ -18,12 +18,12 @@ public:
 
   void resize(unsigned int states);
 
-  typedef double (*_vf)(Eigen::VectorXd);
+  typedef double (*_vf)(Eigen::VectorXd, double);
   
   Eigen::VectorXd operator()(Eigen::VectorXd parameter);
   const _vf operator[](unsigned int i) const { return _vector[i]; }
 
-  void setParameter(unsigned int index, double (*function)(Eigen::VectorXd));
+  void setParameter(unsigned int index, double (*function)(Eigen::VectorXd, double));
   unsigned int getStates() const { return _states; }
   
   static _vf zero(){ return &f_zero; }
