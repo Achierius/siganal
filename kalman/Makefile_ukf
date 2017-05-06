@@ -1,0 +1,13 @@
+# Makefile for compiling a UKF object file for use in another program
+
+FLAGS = -I./include -std=c++14
+vfPath = ./include/vFunc
+
+UKF: ./ukf/ukf.hpp vFunc.o
+	g++ -c -o UKF ./ukf/ukf.hpp vFunc.o $(FLAGS)
+
+vFunc.o: $(vfPath)/vFunc.cpp $(vfPath)/vFunc.hpp
+	g++ -c -o vFunc.o $(vfPath)/vFunc.cpp $(FLAGS)
+
+clean:
+	rm *.o UKF
