@@ -1,4 +1,0 @@
-/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o: In function `_start':
-/build/glibc-qK83Be/glibc-2.19/csu/../sysdeps/x86_64/start.S:118: undefined reference to `main'
-collect2: error: ld returned 1 exit status
-make: *** [vFunc.o] Error 1

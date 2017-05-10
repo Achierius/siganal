@@ -1,10 +1,10 @@
-	#ifndef __MASS_UKF_HPP
-	#define __MASS_UKF_HPP
+#ifndef __MASS_UKF_HPP
+#define __MASS_UKF_HPP
 
-	#include <iostream>
-	#include <cmath>
-	#include <ctime>
-	#include <cstdio>
+#include <iostream>
+#include <cmath>
+#include <ctime>
+#include <cstdio>
 #include "./eigen/Eigen/Dense"
 #include "./vFunc/vFunc.hpp"
 
@@ -12,20 +12,19 @@ namespace ukf_mass{
 
   class ukf{
     public:
-      ukf(int states, int measurements, double alpha, double beta, double kappa, double dT,   //Full definition of the UKF
+      ukf(int states, int measurements, int controls, double alpha, double beta, double kappa, double dT,   //Full definition of the UKF
           Eigen::VectorXd initState, Eigen::MatrixXd initCovar, vFunc transform, vFunc measure,
           Eigen::MatrixXd Q, Eigen::MatrixXd R);
-      ukf(int states, int measurements, double alpha, double beta, double dT,                 //Assumes that Kappa=0
+      ukf(int states, int measurements, int controls, double alpha, double beta, double dT,                 //Assumes that Kappa=0
           Eigen::VectorXd initState, Eigen::MatrixXd initCovar, vFunc transform, vFunc measure,
           Eigen::MatrixXd Q, Eigen::MatrixXd R);
-      ukf(int states, int measurements, double alpha, double beta, double dT,                 //Assumes that Covar = I, initial state -> [0,...,0]^T
+      ukf(int states, int measurements, int controls, double alpha, double beta, double dT,                 //Assumes that Covar = I, initial state -> [0,...,0]^T
           vFunc transform,
           Eigen::MatrixXd Q, Eigen::MatrixXd R);
 
       ~ukf();
-
       ukf(const ukf&) = delete;
-      ukf& operator = (const ukf&) = delete;
+      ukf& operator = (const ukf&) = delete; //Laziest rule of three ever
 
       void stepUKF(double dT, Eigen::VectorXd measurement, Eigen::VectorXd control);
       void stepUKF(double dT);								      //Assumes measuremnt && control == [0...0]^T
@@ -33,13 +32,27 @@ namespace ukf_mass{
       void setQ(Eigen::MatrixXd Q);
       void setR(Eigen::MatrixXd R);
 
+      Eigen::MatrixXd Q(){ return _Q; }
+      Eigen::MatrixXd R(){ return _R; }
+
+      void setKappa(double kappa);
+      void setAlpha(double alpha);
+      void setBeta(double beta);
+
+      double kappa(){ return _kappa; }
+      double alpha(){ return _alpha; }
+      double beta(){ return _beta; }
+
       void setTransform(vFunc transform);
       void setMeasure(vFunc measure);
 
       Eigen::VectorXd currentState();
 
+      static void COOB(char* name, char* function, double minmax, bool min = true);
+
     private:
       int _states;
+      int _controls;
       int _measurements;
 
       double _alpha; //Spread of sigma-points
