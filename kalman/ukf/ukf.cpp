@@ -40,8 +40,8 @@ ukf::ukf(int states, int measurements, int controls, double alpha, double beta, 
   }
   else{
     std::cerr<<"In ukf(~): incorrect size of initial covariance matrix\n";
-    _prevCovar = Eigen::MatrixXd::Zero(_states, _states); //_prevCovar.resize(_states, _states); _prevCovar.zero();
-    _covar = Eigen::MatrixXd::Zero(_states, _states); //_covar.resize(_states, _states); _covar.zero();
+    _prevCovar = Eigen::MatrixXd::Zero(_states, _states);
+    _covar = Eigen::MatrixXd::Zero(_states, _states);
   }
   if(initState.cols() == 1 && initState.rows() == _states){
     _prevState = initState;
@@ -49,8 +49,8 @@ ukf::ukf(int states, int measurements, int controls, double alpha, double beta, 
   }
   else{
     std::cerr<<"In ukf(~): incorrect size of initial state vector\n";
-    _prevState = Eigen::MatrixXd::Zero(_states, 1); //_prevState.resize(_states, 1); _prevState.zero();
-    _state = Eigen::MatrixXd::Zero(_states, 1); //_state.resize(_states, 1); _state.zero();
+    _prevState = Eigen::VectorXd::Zero(_states); //_prevState.resize(_states, 1); _prevState.zero();
+    _state = Eigen::VectorXd::Zero(_states); //_state.resize(_states, 1); _state.zero();
   }
 
 }
@@ -97,8 +97,8 @@ ukf::ukf(int states, int measurements, int controls, double alpha, double beta, 
   }
   else{
     std::cerr<<"In ukf(~): incorrect size of initial state vector\n";
-    _prevState = Eigen::MatrixXd::Zero(_states, 1); //_prevState.resize(_states, 1); _prevState.zero();
-    _state = Eigen::MatrixXd::Zero(_states, 1); //_state.resize(_states, 1); _state.zero();
+    _prevState = Eigen::VectorXd::Zero(_states); //_prevState.resize(_states, 1); _prevState.zero();
+    _state = Eigen::VectorXd::Zero(_states); //_state.resize(_states, 1); _state.zero();
   }
 
 }
@@ -133,8 +133,9 @@ ukf::ukf(int states, int measurements, int controls, double alpha, double beta, 
   _prevCovar = Eigen::MatrixXd::Zero(_states, _states); //_prevCovar.resize(_states, _states); _prevCovar.zero();
   _covar = Eigen::MatrixXd::Zero(_states, _states); //_covar.resize(_states, _states); _covar.zero();
 
-  _prevState = Eigen::MatrixXd::Zero(_states, 1); //_prevState.resize(_states, 1); _prevState.zero();
-  _state = Eigen::MatrixXd::Zero(_states, 1); //_state.resize(_states, 1); _state.zero();
+  _prevState = Eigen::VectorXd::Zero(_states); //_prevState.resize(_states, 1); _prevState.zero();
+  _state = Eigen::VectorXd::Zero(_states); //_state.resize(_states, 1); _state.zero();
+
 }
 
 ukf::~ukf(){
@@ -148,6 +149,7 @@ void ukf::setQ(Eigen::MatrixXd Q){
   }
   std::cerr<<"In setQ: given Q Matrix dimensionality does not correspond to state vector size\n";
   return;
+
 }
 
 void ukf::setR(Eigen::MatrixXd R){
@@ -156,7 +158,7 @@ void ukf::setR(Eigen::MatrixXd R){
     return;
   }
   std::cerr<<"In setR: given R Matrix dimensionality does not correspond to measurement vector size\n";
-  return;
+  return; 
 }
 
 
@@ -169,7 +171,7 @@ void ukf::setMeasure(vFunc measure){
 }
 
 void ukf::stepUKF(double dT){
-  this->stepUKF(dT, Eigen::Matrix::Zero(_measurements), Eigen::Matrix::Zero(_controls));
+  this->stepUKF(dT, Eigen::VectorXd::Zero(_measurements), Eigen::VectorXd::Zero(_controls));
 }
 
 void ukf::setKappa(double kappa){ 
@@ -196,11 +198,13 @@ void ukf::setBeta(double beta){
 }
 
 
-static void ukf::COOB(char* name, char* function, double minmax, bool min = true){
-  std::cerr<"In "<<function<<" "<<name<<" is "<<
+void ukf::COOB(std::string name, std::string function, double minmax, bool min){
+  if(min){ std::cerr<<"In "<<function<<" "<<name<<" is less than the minimum "<<minmax<<"\n"; }
+  else{ std::cerr<<"In "<<function<<" "<<name<<" is greater than the maximum "<<minmax<<"\n"; }
 } 
 
 Eigen::VectorXd ukf::currentState(){
   return _state;
 }
 
+}
