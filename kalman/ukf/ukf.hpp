@@ -5,6 +5,7 @@
 #include <cmath>
 #include <ctime>
 #include <cstdio>
+#include <string>
 #include "./eigen/Eigen/Dense"
 #include "./vFunc/vFunc.hpp"
 
@@ -19,7 +20,7 @@ namespace ukf_mass{
           Eigen::VectorXd initState, Eigen::MatrixXd initCovar, vFunc transform, vFunc measure,
           Eigen::MatrixXd Q, Eigen::MatrixXd R);
       ukf(int states, int measurements, int controls, double alpha, double beta, double dT,                 //Assumes that Covar = I, initial state -> [0,...,0]^T
-          vFunc transform,
+          vFunc transform, vFunc measure,
           Eigen::MatrixXd Q, Eigen::MatrixXd R);
 
       ~ukf();
@@ -48,7 +49,7 @@ namespace ukf_mass{
 
       Eigen::VectorXd currentState();
 
-      static void COOB(char* name, char* function, double minmax, bool min = true);
+      static void COOB(std::string name, std::string function, double minmax, bool min = true);
 
     private:
       int _states;
