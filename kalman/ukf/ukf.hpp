@@ -6,6 +6,7 @@
 #include <ctime>
 #include <cstdio>
 #include <string>
+#include <chrono>
 #include "./eigen/Eigen/Dense"
 #include "./vFunc/vFunc.hpp"
 
@@ -54,10 +55,13 @@ namespace ukf_mass{
     private:
 
       inline void setLambda();
+      inline void setDT(std::chrono::duration dT);
 
       int _states;
       int _controls;
       int _measurements;
+      
+      std::chrono::duration _dT;
 
       double _alpha; //Spread of sigma-points
       double _beta;  //Information about prior distribution; gaussian : = 2

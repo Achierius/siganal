@@ -226,5 +226,9 @@ Eigen::VectorXd ukf::currentState(){
 inline void ukf::setLambda(){
   _lambda = _alpha*_alpha*(_states + _kappa) - _states;
 }
+inline void setDT(std::chrono::duration dT){
+  if(dT <= std::chrono::duration::zero()){ _dT = std::chrono::milliseconds(1); }
+  else{ _dT = dT; }
+}
 
 } //namespace ukf_mass
