@@ -179,9 +179,8 @@ void ukf::stepUKF(double dT){
 
 //Actual Kalman Filter equations
 void ukf::stepUKF(double dT, Eigen::VectorXd measurement, Eigen::VectorXd control){
-  
   for(double i = 0; i < (dT>_dT ? dT : _dT), i+=_dT){
-
+    
   }
 }
 
@@ -225,9 +224,14 @@ Eigen::VectorXd ukf::currentState(){
 
 inline void ukf::setLambda(){
   _lambda = _alpha*_alpha*(_states + _kappa) - _states;
+  _mean0 = _lambda/(_states+_lambda);
+  _covar0 = _mean0 + 1 - _alpha*_alpha + _beta;
 }
 inline void setDT(std::chrono::duration dT){
-  if(dT <= std::chrono::duration::zero()){ _dT = std::chrono::milliseconds(1); }
+  if(dT <= std::chrono::duration::zero()){ 
+    ukf::COOB("the given dT", "setDT", 0);
+    _dT = std::chrono::milliseconds(1);
+  }
   else{ _dT = dT; }
 }
 
