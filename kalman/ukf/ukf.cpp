@@ -30,6 +30,7 @@ ukf::ukf(int states, int measurements, int controls, double alpha, double beta, 
   this->setMeasure(measure);
   this->setTransform(transform);
 
+  _alpha = 0; _beta = 0; _kappa = 0;
   this->setAlpha(alpha);
   this->setBeta(beta);
   this->setKappa(kappa);
@@ -78,6 +79,7 @@ ukf::ukf(int states, int measurements, int controls, double alpha, double beta, 
   this->setMeasure(measure);
   this->setTransform(transform);
 
+  _alpha = 0; _beta = 0; _kappa = 0;
   this->setAlpha(alpha);
   this->setBeta(beta);
   this->setKappa(0);
@@ -126,6 +128,7 @@ ukf::ukf(int states, int measurements, int controls, double alpha, double beta, 
   this->setMeasure(measure);
   this->setTransform(transform);
 
+  _alpha = 0; _beta = 0; _kappa = 0;
   this->setAlpha(alpha);
   this->setBeta(beta);
   this->setKappa(0);
@@ -174,30 +177,43 @@ void ukf::stepUKF(double dT){
   this->stepUKF(dT, Eigen::VectorXd::Zero(_measurements), Eigen::VectorXd::Zero(_controls));
 }
 
+//Actual Kalman Filter equations
+void ukf::stepUKF(double dT, Eigen::VectorXd measurement, Eigen::VectorXd control){
+  
+  for(double i = 0; i < (dT>_dT ? dT : _dT), i+=_dT){
+
+  }
+}
+
 void ukf::setKappa(double kappa){ 
   _kappa = kappa;
+  setLambda();
 }
 
 void ukf::setAlpha(double alpha){
   if(alpha > 1){
     ukf::COOB("alpha", "setAlpha(double alpha)", 1, true);
     _alpha = 1;
+    setLambda();
     return;
   }
   if(alpha < 0.0004){
     ukf::COOB("alpha", "setAlpha(double alpha)", 0.0001);
     _alpha = 0.0004;
+    setLambda();
     return;
   }
   _alpha = alpha;
+  setLambda();
   return;
 }
 
 void ukf::setBeta(double beta){
   _beta = beta;
+  setLambda();
 }
 
-
+//Constant out of bounds
 void ukf::COOB(std::string name, std::string function, double minmax, bool min){
   if(min){ std::cerr<<"In "<<function<<" "<<name<<" is less than the minimum "<<minmax<<"\n"; }
   else{ std::cerr<<"In "<<function<<" "<<name<<" is greater than the maximum "<<minmax<<"\n"; }
@@ -207,4 +223,8 @@ Eigen::VectorXd ukf::currentState(){
   return _state;
 }
 
+inline void ukf::setLambda(){
+  _lambda = _alpha*_alpha*(_states + _kappa) - _states;
 }
+
+} //namespace ukf_mass

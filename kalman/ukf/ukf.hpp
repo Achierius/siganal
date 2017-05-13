@@ -52,6 +52,9 @@ namespace ukf_mass{
       static void COOB(std::string name, std::string function, double minmax, bool min = true);
 
     private:
+
+      inline void setLambda();
+
       int _states;
       int _controls;
       int _measurements;
