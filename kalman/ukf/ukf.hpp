@@ -14,13 +14,16 @@ namespace ukf_mass{
 
   class ukf{
     public:
-      ukf(int states, int measurements, int controls, double alpha, double beta, double kappa, double dT,   //Full definition of the UKF
+      ukf(int states, int measurements, int controls, double alpha, double beta, double kappa,   //Full definition of the UKF
+          std::chrono::milliseconds dT,
           Eigen::VectorXd initState, Eigen::MatrixXd initCovar, vFunc transform, vFunc measure,
           Eigen::MatrixXd Q, Eigen::MatrixXd R);
-      ukf(int states, int measurements, int controls, double alpha, double beta, double dT,                 //Assumes that Kappa=0
+      ukf(int states, int measurements, int controls, double alpha, double beta,                 //Assumes that Kappa=0
+          std::chrono::milliseconds dT,
           Eigen::VectorXd initState, Eigen::MatrixXd initCovar, vFunc transform, vFunc measure,
           Eigen::MatrixXd Q, Eigen::MatrixXd R);
-      ukf(int states, int measurements, int controls, double alpha, double beta, double dT,                 //Assumes that Covar = I, initial state -> [0,...,0]^T
+      ukf(int states, int measurements, int controls, double alpha, double beta,                 //Assumes that Covar = I, initial state -> [0,...,0]^T
+          std::chrono::milliseconds dT, 
           vFunc transform, vFunc measure,
           Eigen::MatrixXd Q, Eigen::MatrixXd R);
 
@@ -28,8 +31,8 @@ namespace ukf_mass{
       ukf(const ukf&) = delete;
       ukf& operator = (const ukf&) = delete; //Laziest rule of three ever
 
-      void stepUKF(double dT, Eigen::VectorXd measurement, Eigen::VectorXd control);
-      void stepUKF(double dT);								      //Assumes measuremnt && control == [0...0]^T
+      void stepUKF(std::chrono::milliseconds dT, Eigen::VectorXd measurement, Eigen::VectorXd control);
+      void stepUKF(std::chrono::milliseconds dT);								      //Assumes measuremnt && control == [0...0]^T
 
       void setQ(Eigen::MatrixXd Q);
       void setR(Eigen::MatrixXd R);
@@ -55,13 +58,13 @@ namespace ukf_mass{
     private:
 
       inline void setLambda();
-      inline void setDT(std::chrono::duration dT);
+      inline void setDT(std::chrono::milliseconds dT);
 
       int _states;
       int _controls;
       int _measurements;
       
-      std::chrono::duration _dT;
+      std::chrono::milliseconds _dT;
 
       double _alpha; //Spread of sigma-points
       double _beta;  //Information about prior distribution; gaussian : = 2
@@ -73,6 +76,7 @@ namespace ukf_mass{
       double _statistic;        //Mean at t =/= 0  =  covar at t =/= 0  =  1/(2*(L+lambda))
 
       Eigen::MatrixXd _sigmaPoints; //Yeah, see the paper lmao
+      Eigen::MatrixXd _measureSigmaPoints;
       ukf_mass::vFunc _transform;   //Moves from time k-1 to time k across a given dT
       ukf_mass::vFunc _measure;
 
