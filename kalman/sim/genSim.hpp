@@ -45,11 +45,11 @@ protected:
   state _input;   //Most recent control input
   ms    _dt;      //
 
-  state _measurement(state input, state measurement, bool feedforward, ms dT) = 0;    //
-  state _transition(state input, state measurement, ms dT) = 0;                       //
+  virtual state _measurement(state input, state measurement, bool feedforward, ms dT) = 0;    //
+  virtual state _transition(state input, state measurement, ms dT) = 0;                       //
 
-  state _pNoise(state state) = 0;                                                     //Applies noise to state provided. Returns _states x 1 vector.
-  state _mNoise(state measurement, state state) = 0;                                  //Applies noise to the measurement provided, presumably from the _measurement function.
+  virtual state _pNoise(state state) = 0;                                                     //Applies noise to state provided. Returns _states x 1 vector.
+  virtual state _mNoise(state measurement, state state) = 0;                                  //Applies noise to the measurement provided, presumably from the _measurement function.
                                                                                       //cont. Returns `_outputs x 1` size vector. May vary noise with actual system state.
   
 };
