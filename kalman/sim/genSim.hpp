@@ -41,8 +41,9 @@ public:
 
   using state Eigen::VectorXd;
   using ms std::chrono::milliseconds;
+
   state getCurrentState(bool measure, bool mNoise);
-  state updateState(state controlInput, double duration, bool pNoise);
+  void  updateState(state controlInput, ms duration, bool pNoise);
   
 protected:
   int   _states;  //Number of state variables
@@ -51,8 +52,8 @@ protected:
   state _input;   //Most recent control input
   ms    _dt;      //
 
-  virtual state _measurement(state input, state measurement, bool feedforward, ms dT) = 0;    //
-  virtual state _transition(state input, state measurement, ms dT) = 0;                       //
+  virtual state _measurement(state input, ms dT) = 0;    //dT represents the individual time-gap between sub-partitions of the overal update interval.
+  virtual state _transition(state input, ms dT) = 0;                       //
 
   virtual state _pNoise(state state) = 0;                                                     //Applies noise to state provided. Returns _states x 1 vector.
   virtual state _mNoise(state measurement, state state) = 0;                                  //Applies noise to the measurement provided, presumably from the _measurement function.
