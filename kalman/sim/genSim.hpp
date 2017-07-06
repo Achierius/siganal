@@ -33,6 +33,12 @@ namespace ukf_mass{
 
 class GenSim{
 public:
+  GenSim();
+ 
+  GenSim(const GenSim& copy); 
+  GenSim & operator= (const GenSim & copy);
+  ~GenSim();
+
   using state Eigen::VectorXd;
   using ms std::chrono::milliseconds;
   state getCurrentState(bool measure, bool mNoise);
