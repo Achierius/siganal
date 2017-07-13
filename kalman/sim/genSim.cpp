@@ -35,7 +35,29 @@ GenSim& GenSim::operator= (const GenSim& copy) noexcept{
   //We aint found shit
 }
 
-GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){
+void GenSim::_setState(state _newState){
+  if(_newState.cols() != 1){
+    std::cerr<</*   TODO    */<<std::endl;
+    return;
+  }
+  _states = _newState.rows();
+  _state = _newState;
+}
+void GenSim::_setInput(state _newInput){
+  if(_newInput.cols() != 1){
+    std::cerr<</*   TODO    */<<std::endl;
+    return;
+  }
+  _inputs = _newInput.rows();
+  _input = _newInput;
+}
+void GenSim::_setOutputSize(int _newOutputs){
+  _outputs = _newOutputs;
+}
+void GenSim::_setDT(std::chrono::milliseconds _newDt){
+}
+
+GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){ //TODO: _outputs based bounds checking
   if(measure){
     if(mNoise){
       return _mNoise(_measurement(this->_state, this->_dT), this->_state);    //TODO: It might be better to have a measurement stored per iteration to avoid being able to repeatedly sample
@@ -51,7 +73,8 @@ GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){
 
 void GenSim::updateCurrentState(GenSim::state controlInput, std::chrono::milliseconds duration, bool pNoise){
   for(std::chrono::milliseconds i = std::chrono::milliseconds(0); i < duration; i += std::min(this->_dT, duration-i)){
-    Eigen::VectorXd temp = _transition(controlInput, std::min(this->_dT, duration-i));                               
+      Eigen::VectorXd temp = _transition(controlInput, std::min(this->_dT, duration-i));                               
+
     if(temp.cols() == 1 && temp.rows() == _states){      //I don't use _setState() because I shouldn't be resetting _states here.
       _state = temp;
     }

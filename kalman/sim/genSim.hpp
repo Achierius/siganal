@@ -35,7 +35,7 @@ namespace ukf_mass{
 
 class GenSim{
 public:
-  GenSim() noexcept;
+  GenSim(int stateVariables, int measurements, int inputs, std::chrono::milliseconds internalDt, Eigen::VectorXd initialState) noexcept;
  
   GenSim(const GenSim& copy) noexcept; 
   GenSim & operator= (const GenSim & copy) noexcept;
@@ -47,9 +47,9 @@ public:
   void  updateState(state controlInput, std::chrono::milliseconds duration, bool pNoise);
 
 protected:
-  void _setState(state _newState);
+  void _setState(state _newState);  //Note: These are meant as hard overrides! They _will_ write in a new state, however it may break the system in the next update if it has the wrong size.
   void _setInput(state _newInput);
-  void _setOutputSize(int _newOutputs);
+  void _setOutputSize(int _newOutputs); //Same thing here; it might not write a state, but it edits a value which is frequently used for bounds checking.
   void _setDT(std::chrono::milliseconds _newDt);
 
   virtual state _measurement(state input, std::chrono::milliseconds dT) = 0;    //
