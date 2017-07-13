@@ -35,10 +35,11 @@ GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){
 void GenSim::updateCurrentState(GenSim::state controlInput, std::chrono::milliseconds duration, bool pNoise){
   for(std::chrono::milliseconds i = std::chrono::milliseconds(0); i < duration; i += std::min(this->_dT, duration-i)){
     Eigen::VectorXd temp = _transition(controlInput, std::min(this->_dT, duration-i));                               
-    if(temp.cols() == 1 && temp.rows() == _output){      //I don't use _setState() because I shouldn't be resetting _states here.
+    if(temp.cols() == 1 && temp.rows() == _states){      //I don't use _setState() because I shouldn't be resetting _states here.
+      _state = temp;
     }
     else{
-      std::cerr<<"Invalid state size in GenSim::updateCurrentState(~) from GenSim::_transitition(~). Control Input: "<<controlInput<<std::endl;
+      std::cerr<<"Invalid state size in GenSim::updateCurrentState(~) from GenSim::_transitition(~). State size: "<<temp.size()<<" Expected: "<<_states<<"x1"<<std::endl;
     }
 
     if(pNoise){ _state = _pNoise(_state); }
@@ -51,4 +52,4 @@ void GenSim::updateCurrentState(GenSim::state controlInput, std::chrono::millise
 }
 
 
-} //anmespace ukf_mass
+} //namespace ukf_mass
