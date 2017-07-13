@@ -44,21 +44,27 @@ public:
 
   state getCurrentState(bool measure, bool mNoise);
   void  updateState(state controlInput, ms duration, bool pNoise);
-  
+
 protected:
-  int   _states;  //Number of state variables
-  int   _outputs; //Number of output variables [from _measurement(~)]
-  state _state;   //Current system state
-  state _input;   //Most recent control input
-  ms    _dt;      //
+  void _setState(state _newState);
+  void _setInput(state _newInput);
+  void _setOutputSize(int _newOutputs);
+  void _setDT(ms _dt);
 
   virtual state _measurement(state input, ms dT) = 0;    //dT represents the individual time-gap between sub-partitions of the overal update interval.
   virtual state _transition(state input, ms dT) = 0;                       //
 
   virtual state _pNoise(state currentState) = 0;                                                     //Applies noise to state provided. Returns _states x 1 vector.
   virtual state _mNoise(state measurement, state currentState) = 0;                                  //Applies noise to the measurement provided, presumably from the _measurement function.
-                                                                                      //cont. Returns `_outputs x 1` size vector. May vary noise with actual system state.
-  
+
+private:
+  int   _states;  //Number of state variables [size of [_state]
+  int   _outputs; //Number of output variables [from _measurement(~)]
+  int   _inputs;  //Number of input variables [size of _input]
+  state _state;   //Current system state
+  state _input;   //Most recent control input
+  ms    _dt;      //
+
 };
 
 }
