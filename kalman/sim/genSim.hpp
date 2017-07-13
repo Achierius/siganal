@@ -26,6 +26,8 @@
  * Both types of noise may be Non-Gaussian/White/Zero Mean, and may
  * vary with the system state.
  *
+ * @author Marcus Plutowski <achierius@gmail.com>
+ *
  ***** GenSim.hpp *****
  */
 
@@ -33,14 +35,13 @@ namespace ukf_mass{
 
 class GenSim{
 public:
-  GenSim();
+  GenSim() noexcept;
  
-  GenSim(const GenSim& copy); 
-  GenSim & operator= (const GenSim & copy);
-  ~GenSim();
+  GenSim(const GenSim& copy) noexcept; 
+  GenSim & operator= (const GenSim & copy) noexcept;
+  ~GenSim() noexcept;
 
   using state Eigen::VectorXd;
-  using ms std::chrono::milliseconds;
 
   state getCurrentState(bool measure, bool mNoise);
   void  updateState(state controlInput, ms duration, bool pNoise);
@@ -49,21 +50,25 @@ protected:
   void _setState(state _newState);
   void _setInput(state _newInput);
   void _setOutputSize(int _newOutputs);
-  void _setDT(ms _dt);
+  void _setDT(std::chrono::milliseconds _newDt);
 
-  virtual state _measurement(state input, ms dT) = 0;    //dT represents the individual time-gap between sub-partitions of the overal update interval.
-  virtual state _transition(state input, ms dT) = 0;                       //
+  virtual state _measurement(state input, std::chrono::milliseconds dT) = 0;    //
+  virtual state _transition(state input, std::chrono::milliseconds dT) = 0;     //
+ 										//dt: duration of sub-partitions of total time elapsed in update step; used to minimize propogation error
+										//dT: duration of total update step, may be much longer than a reasonable single physical update
 
   virtual state _pNoise(state currentState) = 0;                                                     //Applies noise to state provided. Returns _states x 1 vector.
   virtual state _mNoise(state measurement, state currentState) = 0;                                  //Applies noise to the measurement provided, presumably from the _measurement function.
 
 private:
   int   _states;  //Number of state variables [size of [_state]
-  int   _outputs; //Number of output variables [from _measurement(~)]
+  int   _outputs; //Number of output variables [size of the returned variable from _measurement(~)]; output is defined as basically a system measurement
   int   _inputs;  //Number of input variables [size of _input]
+ 
   state _state;   //Current system state
-  state _input;   //Most recent control input
-  ms    _dt;      //
+  state _input;   //Most recent control input: user inputs to system
+ 
+  std::chrono::milliseconds _dt; //See above
 
 };
 
