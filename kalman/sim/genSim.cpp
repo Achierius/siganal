@@ -4,18 +4,35 @@
 namespace ukf_mass{
 
 
-GenSim::GenSim(){
-
+GenSim::GenSim() noexcept{
+  _outputs = measurements;
+  _states = stateVariables;
+  _inputs = inputs;  
+  _dt = internalDt;
+  
+  if(initialState.cols() == 1 && initialState.rows() == _states){
+    _state = initialState;
+  }
+  else{
+    std::cerr<<"Invalid state size in GenSim::GenSim(~) from parameter. State size: "<<initialState.size()<<" Expected: "<<_states<<"x1"<<std::endl;
+  }
 }
-
-GenSim::GenSim(const GenSim& copy){
-
+GenSim::GenSim(const GenSim& copy) noexcept{
+  this->_outputs = copy.measurements;
+  this->_states = copy.stateVariables;
+  this->_inputs = copy.inputs;  
+  this->_dt = copy.internalDt;
+  this->_state = copy.initialState;
 }
-GenSim& GenSim::operator= (const GenSim& copy){
-
+GenSim& GenSim::operator= (const GenSim& copy) noexcept{
+  this->_outputs = copy.measurements;
+  this->_states = copy.stateVariables;
+  this->_inputs = copy.inputs;  
+  this->_dt = copy.internalDt;
+  this->_state = copy.initialState;
 }
-~GenSim(){
-
+~GenSim() noexcept{
+  //We aint found shit
 }
 
 GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){
