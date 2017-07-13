@@ -44,7 +44,7 @@ public:
   using state Eigen::VectorXd;
 
   state getCurrentState(bool measure, bool mNoise);
-  void  updateState(state controlInput, ms duration, bool pNoise);
+  void  updateState(state controlInput, std::chrono::milliseconds duration, bool pNoise);
 
 protected:
   void _setState(state _newState);
