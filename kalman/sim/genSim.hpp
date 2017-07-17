@@ -47,9 +47,14 @@ public:
   void  updateState(state controlInput, std::chrono::milliseconds duration, bool pNoise);
 
 protected:
-  void _setState(state _newState);  //Note: These are meant as hard overrides! They _will_ write in a new state, however it may break the system in the next update if it has the wrong size.
-  void _setInput(state _newInput);
-  void _setOutputSize(int _newOutputs); //Same thing here; it might not write a state, but it edits a value which is frequently used for bounds checking.
+  void _hardSetState(state _newState);  //Note: These are meant as hard overrides! They _will_ write in a new state, however it may break the system in the next update if it has the wrong size
+  void _hardSetInput(state _newInput);
+  void _softSetState(state _newState);  //Setting a state via these two is subject to bounds checking via _states or _outputs
+  void _softSetInput(state _newInput);
+
+  void _setStateLength(int _newStates);
+  void _setInputLength(int _newInputs);
+  void _setOutputLength(int _newOutputs);
   void _setDT(std::chrono::milliseconds _newDt);
 
   virtual state _measurement(state input, std::chrono::milliseconds dT) = 0;    //

@@ -35,7 +35,8 @@ GenSim& GenSim::operator= (const GenSim& copy) noexcept{
   //We aint found shit
 }
 
-void GenSim::_setState(state _newState){
+
+void GenSim::_hardSetState(state _newState){
   if(_newState.cols() != 1){
     std::cerr<</*   TODO    */<<std::endl;
     return;
@@ -43,7 +44,7 @@ void GenSim::_setState(state _newState){
   _states = _newState.rows();
   _state = _newState;
 }
-void GenSim::_setInput(state _newInput){
+void GenSim::_hardSetInput(state _newInput){
   if(_newInput.cols() != 1){
     std::cerr<</*   TODO    */<<std::endl;
     return;
@@ -51,11 +52,54 @@ void GenSim::_setInput(state _newInput){
   _inputs = _newInput.rows();
   _input = _newInput;
 }
-void GenSim::_setOutputSize(int _newOutputs){
-  _outputs = _newOutputs;
+void GenSim::_softSetState(state _newState){
+  if(_newState.cols() == 1 && _newState.rows() == _states){
+    _state = _newState;
+    return;
+  }
+  else{
+    std::cerr<</*    TODO    */<<std::endl;
+    return;
+  }
 }
+void GenSim::_softSetInput(state _newInput){
+  if(_newInput.cols() == 1 && _newInput.rows() == _inputs){
+    _input= _newInput;
+    return;
+  }
+  else{
+    std::cerr<</*    TODO    */<<std::endl;
+    return;
+  }
+}
+void GenSim::_setOutputLength(int _newOutputs){
+  if(_newOutputs > 0){
+    _outputs = _newOutputs;
+  }
+  else{
+    std::cerr<</*    TODO    */<<std::endl;
+  }
+}
+void GenSim::_setInputLength(int _newInputs){  //You can indeed have 0 inputs to a system
+  if(_newInputs >= 0){
+    _inputs= _newInputs;
+  }
+  else{
+    std::cerr<</*    TODO    */<<std::endl;
+  }
+}
+void GenSim::_setStateLength(int _newStates){
+  if(_newStates > 0){
+    _states= _newStates;
+  }
+  else{
+    std::cerr<</*    TODO    */<<std::endl;
+  }
+}
+
 void GenSim::_setDT(std::chrono::milliseconds _newDt){
 }
+
 
 GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){ //TODO: _outputs based bounds checking
   if(measure){
