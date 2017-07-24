@@ -31,8 +31,6 @@
  ***** GenSim.hpp *****
  */
 
-namespace ukf_mass{
-
 class GenSim{
 public:
   GenSim(int stateVariables, int measurements, int inputs, std::chrono::milliseconds internalDt, Eigen::VectorXd initialState) noexcept;
@@ -76,6 +74,4 @@ private:
   std::chrono::milliseconds _dt; //See above
 
 };
-
-}
 

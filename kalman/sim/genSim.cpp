@@ -1,8 +1,6 @@
 #include "genSim.hpp"
 #include <cmath>
 
-namespace ukf_mass{
-
 
 GenSim::GenSim() noexcept{
   _outputs = measurements;
@@ -134,6 +132,3 @@ void GenSim::updateCurrentState(GenSim::state controlInput, std::chrono::millise
     /* Invalid 
   }
 }
-
-
-} //namespace ukf_mass
