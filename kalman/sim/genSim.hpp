@@ -1,3 +1,6 @@
+#ifndef __GEN_SIM_HPP
+#define __GEN_SIM_HPP
+
 #include <iostream>
 #include "./eigen/Eigen/Dense"
 #include <string>
@@ -82,3 +85,4 @@ private:
 
 };
 
+#endif//__GEN_SIM_HPP
