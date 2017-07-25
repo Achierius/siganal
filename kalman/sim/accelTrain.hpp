@@ -19,6 +19,7 @@ class AccelTrain : GenSim {
     std::default_random_engine _generator;
     std::normal_distribution<double> _noise;
 
+    void _fixTransition();
     Eigen::MatrixXd _transition;
 
     //Form of State:
