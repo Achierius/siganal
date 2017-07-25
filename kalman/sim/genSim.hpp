@@ -53,10 +53,12 @@ protected:
   void _softSetState(state _newState);  //Setting a state via these two is subject to bounds checking via _states or _outputs
   void _softSetInput(state _newInput);
 
+  void _setStateIndex(int index, double newValue); //Only one of its kind for now
+
   void _setStateLength(int _newStates);
   void _setInputLength(int _newInputs);
   void _setOutputLength(int _newOutputs);
-  void _setDT(std::chrono::milliseconds _newDt);
+  void _setDT(std::chrono::milliseconds _newDT);
 
   int _getStateLength(){ return _states; }
   int _getOutputLength(){ return _outputs; }

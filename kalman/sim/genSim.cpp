@@ -95,7 +95,22 @@ void GenSim::_setStateLength(int _newStates){
   }
 }
 
-void GenSim::_setDT(std::chrono::milliseconds _newDt){
+void GenSim::_setStateIndex(int index, double newValue){
+  if(index >= _states){
+    std::cerr<<"In GenSim::_setStateIndex(~), given index "<<index<<" beyond the size of the state vector, "<<_states<<std::endl;
+  }
+  else{
+    _state[index] = newValue;
+  }
+}
+
+void GenSim::_setDT(std::chrono::milliseconds _newDT){
+  if(_newDT <= std::chrono::ms(0)){
+    std::cerr<<"In GenSim::_setDT(~), _newDT "<<_newDT<<" is equal to or less than the minimum, 0ms"<<std::endl;
+  }
+  else{
+    _dt = _newDT;
+  }
 }
 
 
