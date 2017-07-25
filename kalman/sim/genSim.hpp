@@ -55,6 +55,13 @@ protected:
   void _setOutputLength(int _newOutputs);
   void _setDT(std::chrono::milliseconds _newDt);
 
+  int _getStateLength(){ return _states; }
+  int _getOutputLength(){ return _outputs; }
+  int _getInputLength(){ return _inputs; }
+  state _getCurState(){ return _state; }
+  state _getCurInput(){ return _input; }
+  std::chrono::milliseconds _getdt(){ return _dt; }
+
   virtual state _measurement(state input, std::chrono::milliseconds dT) = 0;    //
   virtual state _transition(state input, std::chrono::milliseconds dT) = 0;     //
  										//dt: duration of sub-partitions of total time elapsed in update step; used to minimize propogation error
