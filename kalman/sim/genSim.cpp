@@ -109,7 +109,7 @@ GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){ //TODO: _outpu
     }
   }
   else{
-    return this->_state;
+    return this->_getCurState();
   }
 }
 

@@ -60,11 +60,11 @@ protected:
   int _getInputLength(){ return _inputs; }
   state _getCurState(){ return _state; }
   state _getCurInput(){ return _input; }
-  std::chrono::milliseconds _getdt(){ return _dt; }
+  std::chrono::milliseconds _getDT(){ return _dt; }
 
   virtual state _measurement(state input, std::chrono::milliseconds dT) = 0;    //
   virtual state _transition(state input, std::chrono::milliseconds dT) = 0;     //
- 										//dt: duration of sub-partitions of total time elapsed in update step; used to minimize propogation error
+ 										//DT/dt: duration of sub-partitions of total time elapsed in update step; used to minimize propogation error
 										//dT: duration of total update step, may be much longer than a reasonable single physical update
 
   virtual state _pNoise(state currentState) = 0;                                                     //Applies noise to state provided. Returns _states x 1 vector.
