@@ -42,7 +42,7 @@ public:
   GenSim & operator= (const GenSim & copy) noexcept;
   ~GenSim() noexcept;
 
-  using state Eigen::VectorXd;
+  typedef Eigen::VectorXd state;
 
   state getCurrentState(bool measure, bool mNoise);
   void  updateState(state controlInput, std::chrono::milliseconds duration, bool pNoise);

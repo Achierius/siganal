@@ -2,7 +2,7 @@
 #include <cmath>
 
 
-GenSim::GenSim() noexcept{
+GenSim::GenSim(int stateVariables, int measurements, int inputs, std::chrono::milliseconds internalDt, Eigen::VectorXd initialState) noexcept {
   _outputs = measurements;
   _states = stateVariables;
   _inputs = inputs;  
@@ -16,35 +16,35 @@ GenSim::GenSim() noexcept{
   }
 }
 GenSim::GenSim(const GenSim& copy) noexcept{
-  this->_outputs = copy.measurements;
-  this->_states = copy.stateVariables;
-  this->_inputs = copy.inputs;  
-  this->_dt = copy.internalDt;
-  this->_state = copy.initialState;
+  this->_outputs = copy._outputs;
+  this->_states =  copy._states;
+  this->_inputs =  copy._inputs;  
+  this->_dt =      copy._dt;
+  this->_state =   copy._state;
 }
 GenSim& GenSim::operator= (const GenSim& copy) noexcept{
-  this->_outputs = copy.measurements;
-  this->_states = copy.stateVariables;
-  this->_inputs = copy.inputs;  
-  this->_dt = copy.internalDt;
-  this->_state = copy.initialState;
+  this->_outputs = copy._outputs;
+  this->_states =  copy._states;
+  this->_inputs =  copy._inputs;  
+  this->_dt =      copy._dt;
+  this->_state =   copy._state;
 }
-~GenSim() noexcept{
+GenSim::~GenSim() noexcept{
   //We aint found shit
 }
 
 
 void GenSim::_hardSetState(state _newState){
   if(_newState.cols() != 1){
-    std::cerr<</*   TODO    */<<std::endl;
+    std::cerr<<""/*   TODO    */<<std::endl;
     return;
   }
   _states = _newState.rows();
-  _state = _newState;
+  _state =  _newState;
 }
 void GenSim::_hardSetInput(state _newInput){
   if(_newInput.cols() != 1){
-    std::cerr<</*   TODO    */<<std::endl;
+    std::cerr<<""/*   TODO    */<<std::endl;
     return;
   }
   _inputs = _newInput.rows();
@@ -56,7 +56,7 @@ void GenSim::_softSetState(state _newState){
     return;
   }
   else{
-    std::cerr<</*    TODO    */<<std::endl;
+    std::cerr<<""/*    TODO    */<<std::endl;
     return;
   }
 }
@@ -66,7 +66,7 @@ void GenSim::_softSetInput(state _newInput){
     return;
   }
   else{
-    std::cerr<</*    TODO    */<<std::endl;
+    std::cerr<<""/*    TODO    */<<std::endl;
     return;
   }
 }
@@ -75,7 +75,7 @@ void GenSim::_setOutputLength(int _newOutputs){
     _outputs = _newOutputs;
   }
   else{
-    std::cerr<</*    TODO    */<<std::endl;
+    std::cerr<<""/*    TODO    */<<std::endl;
   }
 }
 void GenSim::_setInputLength(int _newInputs){  //You can indeed have 0 inputs to a system
@@ -83,7 +83,7 @@ void GenSim::_setInputLength(int _newInputs){  //You can indeed have 0 inputs to
     _inputs= _newInputs;
   }
   else{
-    std::cerr<</*    TODO    */<<std::endl;
+    std::cerr<<""/*    TODO    */<<std::endl;
   }
 }
 void GenSim::_setStateLength(int _newStates){
@@ -91,7 +91,7 @@ void GenSim::_setStateLength(int _newStates){
     _states= _newStates;
   }
   else{
-    std::cerr<</*    TODO    */<<std::endl;
+    std::cerr<<""/*    TODO    */<<std::endl;
   }
 }
 
@@ -105,8 +105,8 @@ void GenSim::_setStateIndex(int index, double newValue){
 }
 
 void GenSim::_setDT(std::chrono::milliseconds _newDT){
-  if(_newDT <= std::chrono::ms(0)){
-    std::cerr<<"In GenSim::_setDT(~), _newDT "<<_newDT<<" is equal to or less than the minimum, 0ms"<<std::endl;
+  if(_newDT <= std::chrono::milliseconds(0)){
+    std::cerr<<"In GenSim::_setDT(~), _newDT "<<_newDT.count()<<" is equal to or less than the minimum, 0ms"<<std::endl;
   }
   else{
     _dt = _newDT;
@@ -117,10 +117,10 @@ void GenSim::_setDT(std::chrono::milliseconds _newDT){
 GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){ //TODO: _outputs based bounds checking
   if(measure){
     if(mNoise){
-      return _mNoise(_measurement(this->_state, this->_dT), this->_state);    //TODO: It might be better to have a measurement stored per iteration to avoid being able to repeatedly sample
+      return _mNoise(_measurement(this->_state, this->_dt), this->_state);    //TODO: It might be better to have a measurement stored per iteration to avoid being able to repeatedly sample
     }
     else{
-      return _measurement(this->_state, this->_dT);
+      return _measurement(this->_state, this->_dt);
     }
   }
   else{
@@ -128,9 +128,9 @@ GenSim::state GenSim::getCurrentState(bool measure, bool mNoise){ //TODO: _outpu
   }
 }
 
-void GenSim::updateCurrentState(GenSim::state controlInput, std::chrono::milliseconds duration, bool pNoise){
-  for(std::chrono::milliseconds i = std::chrono::milliseconds(0); i < duration; i += std::min(this->_dT, duration-i)){
-      Eigen::VectorXd temp = _transition(controlInput, std::min(this->_dT, duration-i));                               
+void GenSim::updateState(GenSim::state controlInput, std::chrono::milliseconds duration, bool pNoise){
+  for(std::chrono::milliseconds i = std::chrono::milliseconds(0); i < duration; i += std::min(this->_dt, duration-i)){
+      Eigen::VectorXd temp = _transition(controlInput, std::min(this->_dt, duration-i));                               
 
     if(temp.cols() == 1 && temp.rows() == _states){      //I don't use _setState() because I shouldn't be resetting _states here.
       _state = temp;
@@ -142,8 +142,7 @@ void GenSim::updateCurrentState(GenSim::state controlInput, std::chrono::millise
     if(pNoise){ _state = _pNoise(_state); }
   }
   if(duration <= std::chrono::milliseconds(0)){
-    std::cerr<<"Invalid duration in GenSim::updateCurrentState(~). Duration: "<<duration<<std::endl;
+    std::cerr<<"Invalid duration in GenSim::updateCurrentState(~). Duration: "<<duration.count()<<std::endl;
     _state = _state; 
-    /* Invalid 
   }
 }
