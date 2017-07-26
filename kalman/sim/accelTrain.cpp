@@ -3,8 +3,9 @@
 AccelTrain::AccelTrain(double initState) : GenSim::GenSim(3, 1, 1, std::chrono::milliseconds(1), AccelTrain::unpare(initState)) {
 
   double dT = 0.001;                //Seconds per millisecond
-  _transitionMat << 1,  dT, dT*dT/2;   //Standard state transition matrix
-                    0,  1,  dT;
+  _transitionMat = Eigen::Matrix3d();
+  _transitionMat << 1,  dT, dT*dT/2,   //Standard state transition matrix
+                    0,  1,  dT,
                     0,  0,  0;         //Acceleration nulled at each time step
   
   _mNoiseD.param(std::normal_distribution<double>::param_type(0, 0.250)); //stddev = 3 inches
