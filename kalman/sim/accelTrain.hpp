@@ -20,8 +20,6 @@ class AccelTrain : public GenSim {
   public:
     AccelTrain(double initState);
 
-    void setInput(double input);
-
     static Eigen::VectorXd unpare(double input); //Returns a 3-vector containing the given double in the initial cell and 0's in the following 2
  
   private:
