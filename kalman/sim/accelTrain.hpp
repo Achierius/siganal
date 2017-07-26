@@ -32,19 +32,20 @@ class AccelTrain : GenSim {
     state _mNoise(GenSim::state measurement, GenSim::state currentState) override;
 
     std::default_random_engine _generatorM;
-    std::normal_distribution<double> _mNoise;
+    std::normal_distribution<double> _mNoiseD;
     
     std::default_random_engine _generatorP;
-    std::normal_distribution<double> _pNoise;
+    std::normal_distribution<double> _pNoiseD;
 
-    Eigen::MatrixXd _transition;
+    Eigen::MatrixXd _transitionMat;
 
     double _input;
 
     //Form of State:
     /*   x    -- feet
-    /*   x'   -- feet/second
-     */  x''  -- feet/second^2
-}
+     *   x'   -- feet/second
+     *   x''  -- feet/second^2
+     */
+};
 
 #endif//__ACCEL_TRAIN_HPP

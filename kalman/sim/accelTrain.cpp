@@ -1,17 +1,17 @@
 #include "accelTrain.hpp"
 
-AccelTrain::AccelTrain(double initState) : GenSim::GenSim(3, 1, 1, std::chrono::ms(1), AccelTrain::unpare(initState)) {
+AccelTrain::AccelTrain(double initState) : GenSim::GenSim(3, 1, 1, std::chrono::milliseconds(1), AccelTrain::unpare(initState)) {
 
   double dT = 0.001;                //Seconds per millisecond
-  _transition << 1,  dT, dT*dT/2;   //Standard state transition matrix
-                 0,  1,  dt;
-                 0,  0,  0;         //Acceleration nulled at each time step
+  _transitionMat << 1,  dT, dT*dT/2;   //Standard state transition matrix
+                    0,  1,  dT;
+                    0,  0,  0;         //Acceleration nulled at each time step
   
-  _mNoise.param(std::normal_distribution<double>::param_type(0, 0.250); //stddev = 3 inches
-  _pNoise.param(std::normal_distrbiution<double>::param_type(0, 0.083); //stddev = 1 inch
+  _mNoiseD.param(std::normal_distribution<double>::param_type(0, 0.250)); //stddev = 3 inches
+  _pNoiseD.param(std::normal_distribution<double>::param_type(0, 0.083)); //stddev = 1 inch
 }
 
-static Eigen::VectorXd unpare(double input){
+Eigen::VectorXd AccelTrain::unpare(double input){
   Eigen::VectorXd n(3);
   n << input, 0, 0;
   return n;
@@ -26,7 +26,7 @@ GenSim::state AccelTrain::_transition(GenSim::state input, std::chrono::millisec
   
   this->_setStateIndex(2, input[0]); //Adding input to current state vector, as acceleration will not come from any other source
      
-  return _transition*_getCurState(); //Standard Kalman-esque linear state transition
+  return _transitionMat*_getCurState(); //Standard Kalman-esque linear state transition
 }  
 
 GenSim::state AccelTrain::_measurement(GenSim::state input, std::chrono::milliseconds dt) { //Let's say there's an encoder on one of the wheels: 
@@ -36,11 +36,11 @@ GenSim::state AccelTrain::_measurement(GenSim::state input, std::chrono::millise
 }
 
 							
-GenSim::state GenSim::_pNoise(GenSim::state state) {       //Process noise: Applies to velocity. Mean 0, Gaussian, StDev = 1 inches (1/12 ft).
-  state[1] += _pNoise(_generatorP);
+GenSim::state AccelTrain::_pNoise(GenSim::state state) {       //Process noise: Applies to velocity. Mean 0, Gaussian, StDev = 1 inches (1/12 ft).
+  state[1] += _pNoiseD(_generatorP);
   return state;
 }
-GenSim::state GenSim::_mNoise(GenSim::state measurement) {       //Measure noise: Applies to position. Mean 0, Gaussian, StDev = 3 inches (1/4 ft)
-  measurement[0] += _mNoise(_generatorM);
+GenSim::state AccelTrain::_mNoise(GenSim::state measurement, GenSim::state currentState) {       //Measure noise: Applies to position. Mean 0, Gaussian, StDev = 3 inches (1/4 ft)
+  measurement[0] += _mNoiseD(_generatorM);
   return measurement;
 }
