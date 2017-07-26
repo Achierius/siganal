@@ -16,7 +16,7 @@
  * @author Marcus Plutowski <achierius@gmail.com>
  */
 
-class AccelTrain : GenSim {
+class AccelTrain : public GenSim {
   public:
     AccelTrain(double initState);
 
