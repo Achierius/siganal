@@ -23,8 +23,13 @@ GenSim::state AccelTrain::_transition(GenSim::state input, std::chrono::millisec
   //Thus, literally just Position, dPosition/dT, d^2 Position/ dT^2
  
   //Model:
-  //Position/Velocity propogate as expected; acceleration is presumed 0
-  
+  //Position/Velocity propogate as expected; acceleration is presumed 1
+
+  double dT = static_cast<double>(dt.count())/1000;  
+  _transitionMat << 1,  dT, dT*dT/2,   
+                    0,  1,  dT,
+                    0,  0,  0;        
+
   this->_setStateIndex(2, input[0]); //Adding input to current state vector, as acceleration will not come from any other source
      
   return _transitionMat*_getCurState(); //Standard Kalman-esque linear state transition
