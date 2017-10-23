@@ -10,6 +10,12 @@
 #include "./eigen/Eigen/Dense"
 #include "./vFunc/vFunc.hpp"
 
+/*
+ * UKF_MASS
+ * @author Marcus Plutowski <achierius@gmail.com>
+ * A general-form Unscented Kalman Filter for non-linear system observation
+ */
+
 namespace ukf_mass{
 
   class ukf{
